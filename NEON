@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEON Vector Disease Intelligence Dashboard</title>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  background: #f4f7f5;
+  color: #1b1b1b;
+  font-size: 18px;
+}
+
+header {
+  background: #2e5339;
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+button, select {
+  font-size: 18px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem;
+}
+
+#map {
+  height: 500px;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: #e8f0ea;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+
+.card:hover {
+  background: #d6e8d8;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background: #cde3d0;
+}
+
+.back-btn, .home-btn {
+  background: #2e5339;
+  color: white;
+  margin: 0.5rem;
+}
+
+.chart-container {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+#tempToggle {
+  margin-left: 1rem;
+}
+
+.spinner {
+  text-align: center;
+  padding: 2rem;
+  font-size: 20px;
+}
+
+.italic {
+  font-style: italic;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>NEON Vector Disease Intelligence Dashboard</h1>
+  <p>Mosquito, Pathogen, and Climate Insights</p>
+</header>
+
+<div id="app" class="container">
+  <div id="loading" class="spinner">Loading NEON data now...</div>
+  
+  <div id="siteSelection" style="display:none;">
+    <h2>Select a NEON Field Site</h2>
+    <div id="map"></div>
+  </div>
+
+  <div id="siteInfo" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+    <h2 id="siteTitle"></h2>
+    <p id="siteDetails"></p>
+    <h3>Diseases Detected</h3>
+    <div id="diseaseList"></div>
+  </div>
+
+  <div id="speciesList" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+    <h2 id="diseaseTitle"></h2>
+    <div class="table-container">
+      <table id="speciesTable">
+        <thead>
+          <tr>
+            <th>Species</th>
+            <th>Tested</th>
+            <th>Positive</th>
+            <th>Infection Rate</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="dashboard" style="display:none;">
+    <button class="back-btn" onclick="showPage('speciesList')">← Back</button>
+    <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <h2 id="dashboardTitle"></h2>
+    <p id="dashboardSummary"></p>
+
+    <div class="chart-container">
+      <h3>Monthly Trends (Mosquitoes, Rainfall, Temperature)</h3>
+      <canvas id="chartMonthly"></canvas>
+      <label>
+        <input type="checkbox" id="tempToggle" checked> Show °C / °F
+      </label>
+    </div>
+
+    <div class="chart-container">
+      <h3>Annual Trends (Last 10 Years)</h3>
+      <canvas id="chartAnnual"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h3>Infection Rates Across NEON Sites</h3>
+      <div id="mapDashboard" style="height:400px;"></div>
+    </div>
+
+    <div class="chart-container">
+      <h3>Site Hydrology</h3>
+      <p id="hydrology"></p>
+    </div>
+
+    <div class="chart-container">
+      <h3>Temperature Summary (5-Year Average)</h3>
+      <canvas id="chartTemp"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = "https://data.neonscience.org/api/v0";
+
+let map, mapDashboard, chartMonthly, chartAnnual, chartTemp;
+let siteData = [];
+let currentSite = null, currentDisease = null, currentSpecies = null;
+
+
+// ========================================
+// PAGE NAVIGATION
+// ========================================
+
+function showPage(pageId) {
+  document.querySelectorAll('#app > div').forEach(div => {
+    div.style.display = 'none';
+  });
+  document.getElementById(pageId).style.display = 'block';
+}
+
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+async function init() {
+  showPage('loading');
+  await loadSites();
+  showPage('siteSelection');
+}
+
+
+// ========================================
+// LOAD SITES FROM NEON API
+// ========================================
+
+async function loadSites() {
+  // Placeholder: simulate NEON site data
+  // TODO: Replace with actual NEON API calls
+  siteData = [
+    {
+      siteID: "ORNL",
+      name: "Oak Ridge",
+      lat: 35.9,
+      lon: -84.3,
+      habitat: "Deciduous Forest",
+      elevation: 250
+    },
+    {
+      siteID: "DSNY",
+      name: "Disney Wilderness",
+      lat: 28.2,
+      lon: -81.5,
+      habitat: "Wetland",
+      elevation: 30
+    }
+  ];
+  
+  renderMap();
+}
+
+
+// ========================================
+// RENDER SITE SELECTION MAP
+// ========================================
+
+function renderMap() {
+  map = L.map('map').setView([39, -98], 4);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  
+  siteData.forEach(site => {
+    const marker = L.circleMarker([site.lat, site.lon], {
+      radius: 8,
+      fillColor: "#2e5339",
+      color: "#1b1b1b",
+      weight: 1,
+      fillOpacity: 0.8
+    });
+    
+    marker.bindPopup(`<b>${site.name}</b><br>${site.siteID}`);
+    marker.on('click', () => showSiteInfo(site));
+    marker.addTo(map);
+  });
+}
+
+
+// ========================================
+// SHOW SITE INFO PAGE
+// ========================================
+
+function showSiteInfo(site) {
+  currentSite = site;
+  
+  document.getElementById('siteTitle').innerText = `${site.name} (${site.siteID})`;
+  
+  document.getElementById('siteDetails').innerText = 
+    `Habitat: ${site.habitat} | Elevation: ${site.elevation} m | Location: ${site.lat.toFixed(2)}, ${site.lon.toFixed(2)}`;
+  
+  // Placeholder disease data
+  // TODO: Replace with actual NEON pathogen API calls
+  const diseases = [
+    {
+      common: "West Nile Virus",
+      scientific: "Flavivirus",
+      species: 3
+    },
+    {
+      common: "Eastern Equine Encephalitis",
+      scientific: "Alphavirus",
+      species: 2
+    }
+  ];
+  
+  const list = document.getElementById('diseaseList');
+  list.innerHTML = "";
+  
+  diseases.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<b>${d.common}</b> (<i>${d.scientific}</i>)<br>${d.species} species affected`;
+    card.onclick = () => showSpeciesList(d);
+    list.appendChild(card);
+  });
+  
+  showPage('siteInfo');
+}
+
+
+// ========================================
+// SHOW SPECIES LIST PAGE
+// ========================================
+
+function showSpeciesList(disease) {
+  currentDisease = disease;
+  
+  document.getElementById('diseaseTitle').innerText = 
+    `${disease.common} (${disease.scientific})`;
+  
+  const tbody = document.querySelector('#speciesTable tbody');
+  tbody.innerHTML = "";
+  
+  // Placeholder species data
+  // TODO: Replace with actual NEON mosquito/pathogen API calls
+  const species = [
+    {
+      name: "Aedes albopictus",
+      tested: 120,
+      positive: 15
+    },
+    {
+      name: "Culex pipiens",
+      tested: 85,
+      positive: 3
+    }
+  ];
+  
+  species.forEach(s => {
+    const tr = document.createElement('tr');
+    const rate = ((s.positive / s.tested) * 100).toFixed(1);
+    
+    tr.innerHTML = `
+      <td class="italic">${s.name}</td>
+      <td>${s.tested}</td>
+      <td>${s.positive}</td>
+      <td>${rate}%</td>
+    `;
+    
+    tr.onclick = () => showDashboard(s);
+    tr.style.cursor = 'pointer';
+    tbody.appendChild(tr);
+  });
+  
+  showPage('speciesList');
+}
+
+
+// ========================================
+// SHOW ANALYSIS DASHBOARD
+// ========================================
+
+function showDashboard(species) {
+  currentSpecies = species;
+  
+  document.getElementById('dashboardTitle').innerText = 
+    `${currentSite.name} - ${currentDisease.common} in ${species.name}`;
+  
+  const rate = ((species.positive / species.tested) * 100).toFixed(1);
+  
+  document.getElementById('dashboardSummary').innerText = 
+    `Field Site: ${currentSite.name} (${currentSite.siteID}) | Species: ${species.name} | Disease: ${currentDisease.common} | Tested: ${species.tested} | Positive: ${species.positive} | Infection Rate: ${rate}% | Abundance: ${species.tested} | Ranking: 3rd highest infection rate among NEON sites with this disease.`;
+  
+  document.getElementById('hydrology').innerText = 
+    `${currentSite.habitat} habitat.`;
+  
+  renderCharts();
+  renderDashboardMap();
+  
+  showPage('dashboard');
+}
+
+
+// ========================================
+// RENDER DASHBOARD CHARTS
+// ========================================
+
+function renderCharts() {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  // Placeholder data - TODO: Replace with actual NEON data
+  const mosq = months.map(() => Math.floor(Math.random() * 200));
+  const rain = months.map(() => Math.random() * 10);
+  const tempC = months.map(() => 15 + Math.random() * 10);
+  const tempF = tempC.map(c => c * 9 / 5 + 32);
+  
+  // Monthly Trends Chart
+  const ctx1 = document.getElementById('chartMonthly');
+  if (chartMonthly) chartMonthly.destroy();
+  
+  chartMonthly = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Mosquitoes',
+          data: mosq,
+          backgroundColor: '#4caf50',
+          yAxisID: 'y1'
+        },
+        {
+          label: 'Rainfall (mm)',
+          data: rain,
+          type: 'line',
+          borderColor: '#2196f3',
+          yAxisID: 'y2'
+        },
+        {
+          label: 'Temperature (°C)',
+          data: tempC,
+          type: 'line',
+          borderColor: '#f57c00',
+          yAxisID: 'y3'
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y1: {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Mosquitoes'
+          }
+        },
+        y2: {
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Rainfall (mm)'
+          },
+          grid: {
+            drawOnChartArea: false
+          }
+        },
+        y3: {
+          display: false
+        }
+      }
+    }
+  });
+  
+  // Temperature toggle
+  document.getElementById('tempToggle').onchange = (e) => {
+    const showC = e.target.checked;
+    chartMonthly.data.datasets[2].data = showC ? tempC : tempF;
+    chartMonthly.data.datasets[2].label = showC ? 'Temperature (°C)' : 'Temperature (°F)';
+    chartMonthly.update();
+  };
+  
+  // Annual Trends Chart
+  const years = Array.from({length: 10}, (_, i) => 2016 + i);
+  const annualMosq = years.map(() => Math.floor(Math.random() * 1000));
+  const annualRate = years.map(() => Math.random() * 20);
+  
+  const ctx2 = document.getElementById('chartAnnual');
+  if (chartAnnual) chartAnnual.destroy();
+  
+  chartAnnual = new Chart(ctx2, {
+    data: {
+      labels: years,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Mosquitoes',
+          data: annualMosq,
+          backgroundColor: '#81c784',
+          yAxisID: 'y1'
+        },
+        {
+          type: 'line',
+          label: 'Infection Rate (%)',
+          data: annualRate,
+          borderColor: '#e53935',
+          yAxisID: 'y2'
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y1: {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Mosquitoes'
+          }
+        },
+        y2: {
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Infection Rate (%)'
+          },
+          grid: {
+            drawOnChartArea: false
+          }
+        }
+      }
+    }
+  });
+  
+  // Temperature Summary Chart
+  const ctx3 = document.getElementById('chartTemp');
+  if (chartTemp) chartTemp.destroy();
+  
+  const avgHigh = months.map(() => 25 + Math.random() * 5);
+  const avgLow = months.map(() => 10 + Math.random() * 5);
+  
+  chartTemp = new Chart(ctx3, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'High Temp (°C)',
+          data: avgHigh,
+          borderColor: '#f44336',
+          fill: false
+        },
+        {
+          label: 'Low Temp (°C)',
+          data: avgLow,
+          borderColor: '#2196f3',
+          fill: false
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'Temperature (°C)'
+          }
+        }
+      }
+    }
+  });
+}
+
+
+// ========================================
+// RENDER DASHBOARD MAP
+// ========================================
+
+function renderDashboardMap() {
+  if (mapDashboard) mapDashboard.remove();
+  
+  mapDashboard = L.map('mapDashboard').setView([39, -98], 4);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapDashboard);
+  
+  siteData.forEach(site => {
+    const rate = Math.random() * 20; // Placeholder
+    
+    const marker = L.circleMarker([site.lat, site.lon], {
+      radius: Math.max(5, rate / 2),
+      fillColor: "#e53935",
+      color: "#222",
+      weight: 1,
+      fillOpacity: 0.8
+    });
+    
+    marker.bindPopup(`<b>${site.name}</b><br>Infection Rate: ${rate.toFixed(1)}%`);
+    marker.addTo(mapDashboard);
+  });
+}
+
+
+// ========================================
+// START APPLICATION
+// ========================================
+
+init();
+</script>
+</body>
+</html>
