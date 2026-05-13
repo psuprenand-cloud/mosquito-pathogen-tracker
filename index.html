@@ -463,7 +463,7 @@ const sampleData = {
     { id: "HEAL", name: "Healy", lat: 63.8815, lng: -149.2130, state: "AK", elevation: 404, ecosystem: "Boreal Forest", diseases: ["Culiseta melanura Complex", "Orthobunyavirus (Snowshoe Hare)"] },
     { id: "MLBS", name: "Mountain Lake Biological Station", lat: 37.3781, lng: -80.5297, state: "VA", elevation: 640, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
     { id: "OAES", name: "Oaks and Prairies", lat: 35.4107, lng: -97.5192, state: "OK", elevation: 345, ecosystem: "Oak Savanna", diseases: ["West Nile Virus"] },
-    { id: "ORNL", name: "Oak Ridge National Laboratory", lat: 35.9034, lng: -84.3279, state: "TN", elevation: 226, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
+    { id: "ORNL", name: "Oak Ridge National Laboratory", lat: 35.9034, lng: -84.3279, state: "TN", elevation: 226, ecosystem: "Temperate Deciduous Forest", diseases: ["West Nile Virus", "La Crosse Encephalitis", "St. Louis Encephalitis"] },
     { id: "PUUM", name: "Puu Makai", lat: 20.8049, lng: -156.4519, state: "HI", elevation: 2430, ecosystem: "Tropical Shrubland", diseases: ["Dengue"] },
     { id: "RMNP", name: "Rocky Mountain National Park", lat: 40.4150, lng: -105.5859, state: "CO", elevation: 2925, ecosystem: "Alpine Meadow", diseases: ["Eastern Equine Encephalitis", "West Nile Virus", "St. Louis Encephalitis"] },
     { id: "SAGU", name: "Saguaro National Monument", lat: 32.2508, lng: -110.7578, state: "AZ", elevation: 875, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
@@ -589,7 +589,13 @@ const sampleData = {
       { name: "Aedes communis", tested: 1540, positive: 18 },
       { name: "Aedes impiger", tested: 1320, positive: 12 }
     ]
-  }
+  },
+  "La Crosse Encephalitis": {
+  species: [
+    { name: "Aedes triseriatus", tested: 450, positive: 28 },
+    { name: "Aedes albopictus", tested: 620, positive: 5 },
+    { name: "Aedes vexans", tested: 310, positive: 2 }
+  ]
 },
   // Site-specific climate profiles (will be populated dynamically)
   siteClimateProfiles: {},
