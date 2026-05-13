@@ -1208,8 +1208,19 @@ function selectSite(site) {
       <td>${totalTested.toLocaleString()}</td>
       <td>${totalPositive}</td>
       <td><span style="font-weight: bold; color: ${infectionRate > 5 ? '#dc3545' : infectionRate > 2 ? '#ffc107' : '#28a745'}">${infectionRate}%</span></td>
-      <td><button onclick="selectDiseaseForSite('${disease}')" style="padding: 0.5rem 1rem; font-size: 14px;">View Species</button></td>
+      <td><button onclick="selectDiseaseForSite('${disease}')" style="padding: 0.7rem 1.2rem; font-size: 15px; font-weight: 600; background: #2e5339; color: white; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s ease;">View Species</button></td>
     `;
+    const button = row.querySelector('button');
+    button.onmouseover = () => {
+      button.style.background = '#1e3f2a';
+      button.style.transform = 'translateY(-2px)';
+      button.style.boxShadow = '0 4px 8px rgba(46, 83, 57, 0.3)';
+    };
+    button.onmouseout = () => {
+      button.style.background = '#2e5339';
+      button.style.transform = 'translateY(0)';
+      button.style.boxShadow = 'none';
+    };
     tbody.appendChild(row);
   });
 
@@ -1232,12 +1243,23 @@ function selectDisease(diseaseName) {
     const rate = ((s.positive / s.tested) * 100).toFixed(1);
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><em>${s.name}</em></td>
+      <td><em style="color: #2e5339; font-size: 17px; font-weight: 600;">${s.name}</em></td>
       <td>${s.tested}</td>
       <td>${s.positive}</td>
       <td>${rate}%</td>
     `;
     row.style.cursor = 'pointer';
+    row.style.transition = 'all 0.2s ease';
+    row.onmouseover = () => {
+      row.style.backgroundColor = '#d6e8d8';
+      row.style.boxShadow = '0 2px 6px rgba(46, 83, 57, 0.2)';
+      row.style.transform = 'scale(1.02)';
+    };
+    row.onmouseout = () => {
+      row.style.backgroundColor = 'transparent';
+      row.style.boxShadow = 'none';
+      row.style.transform = 'scale(1)';
+    };
     row.onclick = () => selectSpecies(s.name);
     tbody.appendChild(row);
   });
@@ -1864,5 +1886,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb26ff1f14fe0d6',t:'MTc3ODY4MzQyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb29995665332d8',t:'MTc3ODY4NTEzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
