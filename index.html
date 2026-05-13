@@ -384,7 +384,11 @@ th {
     </div>
     <div class="chart-container">
      <h3>Infection Rates Across NEON Sites</h3>
-     <div id="mapDashboard" style="height: 500px; border-radius: 8px;"></div>
+     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
+     </div>
+     <div id="mapDashboard" style="height: 500px; border-radius: 8px; position: relative;"></div>
+     <div id="mapLegendBox" style="background: white; border: 1px solid #ccc; border-radius: 6px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
     </div>
     <div class="chart-container">
      <h3>Site Hydrology</h3>
@@ -416,7 +420,8 @@ let state = {
   dashboardMap: null,
   data: null,
   isCelsius: true,
-  charts: {}
+  charts: {},
+  mapOverlayMode: 'infection'  // Track which overlay is active
 };
 
 // All 81 NEON field sites with real coordinates and ecosystems
@@ -863,7 +868,7 @@ function updateDashboardMapForDisease() {
   // Clear existing markers and layers
   if (state.dashboardMap) {
     state.dashboardMap.eachLayer(layer => {
-      if (layer instanceof L.CircleMarker || (layer instanceof L.Marker && layer.getIcon().options.className === 'infection-label')) {
+      if (layer instanceof L.CircleMarker || (layer instanceof L.Marker && layer.getIcon && layer.getIcon().options.className === 'infection-label')) {
         state.dashboardMap.removeLayer(layer);
       }
     });
@@ -874,6 +879,19 @@ function updateDashboardMapForDisease() {
   
   if (!diseaseData) return;
 
+  // Render based on selected overlay mode
+  if (state.mapOverlayMode === 'infection') {
+    renderInfectionOverlay(disease, diseaseData);
+  } else if (state.mapOverlayMode === 'temperature') {
+    renderTemperatureOverlay();
+  } else if (state.mapOverlayMode === 'rainfall') {
+    renderRainfallOverlay();
+  } else if (state.mapOverlayMode === 'mosquitoes') {
+    renderMosquitoOverlay();
+  }
+}
+
+function renderInfectionOverlay(disease, diseaseData) {
   // Calculate site-specific infection rates with variation
   const siteInfectionRates = sampleData.sites.map((site, siteIndex) => {
     // Only include sites that have this disease
@@ -892,7 +910,7 @@ function updateDashboardMapForDisease() {
     const baseRate = totalTested > 0 ? (totalPositive / totalTested) * 100 : 0;
     
     // Add site-specific variation (±40% from base rate) using site index as seed
-    const variation = 0.6 + (Math.sin(siteIndex * 12.9898) * 0.4); // Deterministic variation per site
+    const variation = 0.6 + (Math.sin(siteIndex * 12.9898) * 0.4);
     const siteSpecificRate = baseRate * variation;
     
     return {
@@ -906,15 +924,39 @@ function updateDashboardMapForDisease() {
   const minRate = rates.length > 0 ? Math.min(...rates) : 0;
   const maxRate = rates.length > 0 ? Math.max(...rates) : 1;
 
+  const legendHTML = `
+    <div style="font-weight: bold; margin-bottom: 0.75rem; color: #2e5339;">Infection Rate</div>
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; row-gap: 0.5rem; align-items: center;">
+      <div style="width: 24px; height: 24px; background: #dc3545; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">High Risk: ${maxRate.toFixed(1)}%+</span>
+      
+      <div style="width: 24px; height: 24px; background: #ffc107; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Moderate: ${((minRate + maxRate) / 2).toFixed(1)}%</span>
+      
+      <div style="width: 24px; height: 24px; background: #28a745; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Low Risk: ${minRate.toFixed(1)}%</span>
+    </div>
+  `;
+  
+  document.getElementById('mapLegendBox').innerHTML = legendHTML;
+
   siteInfectionRates.forEach(({ site, rate }) => {
     if (rate > 0) {
       // Scale radius based on infection rate (5-25px)
       const radius = 5 + ((rate - minRate) / (maxRate - minRate || 1)) * 20;
       
+      // Color gradient: red (high) -> yellow (medium) -> green (low)
+      let fillColor = '#28a745'; // green
+      if (rate > minRate + (maxRate - minRate) * 0.67) {
+        fillColor = '#dc3545'; // red
+      } else if (rate > minRate + (maxRate - minRate) * 0.33) {
+        fillColor = '#ffc107'; // yellow
+      }
+      
       const marker = L.circleMarker([site.lat, site.lng], {
         radius: radius,
-        fillColor: '#e24a4a',
-        color: '#c23a3a',
+        fillColor: fillColor,
+        color: '#333',
         weight: 2,
         opacity: 1,
         fillOpacity: 0.8
@@ -927,13 +969,163 @@ function updateDashboardMapForDisease() {
       L.marker([site.lat, site.lng], {
         icon: L.divIcon({
           className: 'infection-label',
-          html: `<div style="font-size: 11px; font-weight: bold; color: #000000;">${rate.toFixed(1)}%</div>`,
+          html: `<div style="font-size: 11px; font-weight: bold; color: #000; text-shadow: 1px 1px 2px white;">${rate.toFixed(1)}%</div>`,
           iconSize: [30, 20],
           iconAnchor: [15, 10]
         })
       }).addTo(state.dashboardMap);
     }
   });
+}
+
+function renderTemperatureOverlay() {
+  const legendHTML = `
+    <div style="font-weight: bold; margin-bottom: 0.75rem; color: #2e5339;">Annual Average Temperature</div>
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; row-gap: 0.5rem; align-items: center;">
+      <div style="width: 24px; height: 24px; background: #dc3545; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Hot: 25°C and above</span>
+      
+      <div style="width: 24px; height: 24px; background: #ffc107; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Moderate: 10–25°C</span>
+      
+      <div style="width: 24px; height: 24px; background: #3b82f6; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Cold: Below 10°C</span>
+    </div>
+  `;
+  
+  document.getElementById('mapLegendBox').innerHTML = legendHTML;
+
+  sampleData.sites.forEach((site, siteIndex) => {
+    const siteData = generateSiteClimateData(site);
+    const avgTemp = (siteData.seasonalTemp[0] + siteData.seasonalTemp[1] + siteData.seasonalTemp[2] + siteData.seasonalTemp[3]) / 4;
+    
+    // Color gradient based on temperature
+    let fillColor = '#3b82f6'; // blue (cold)
+    if (avgTemp > 20) {
+      fillColor = '#dc3545'; // red (hot)
+    } else if (avgTemp > 10) {
+      fillColor = '#ffc107'; // yellow (moderate)
+    }
+    
+    const radius = 8;
+    const marker = L.circleMarker([site.lat, site.lng], {
+      radius: radius,
+      fillColor: fillColor,
+      color: '#333',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    }).addTo(state.dashboardMap);
+
+    marker.bindPopup(`<strong>${site.name}</strong><br>Avg Temp: ${avgTemp.toFixed(1)}°C`);
+  });
+}
+
+function renderRainfallOverlay() {
+  const legendHTML = `
+    <div style="font-weight: bold; margin-bottom: 0.75rem; color: #2e5339;">Annual Average Rainfall</div>
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; row-gap: 0.5rem; align-items: center;">
+      <div style="width: 24px; height: 24px; background: #3b82f6; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Wet: 800mm and above</span>
+      
+      <div style="width: 24px; height: 24px; background: #22c55e; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Moderate: 400–800mm</span>
+      
+      <div style="width: 24px; height: 24px; background: #8b6f47; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Dry: Below 400mm</span>
+    </div>
+  `;
+  
+  document.getElementById('mapLegendBox').innerHTML = legendHTML;
+
+  sampleData.sites.forEach((site, siteIndex) => {
+    const siteData = generateSiteClimateData(site);
+    const totalRainfall = siteData.monthlyRainfall.reduce((a, b) => a + b, 0);
+    
+    // Color gradient based on rainfall
+    let fillColor = '#8b6f47'; // brown (dry)
+    if (totalRainfall > 800) {
+      fillColor = '#3b82f6'; // blue (wet)
+    } else if (totalRainfall > 400) {
+      fillColor = '#22c55e'; // green (moderate)
+    }
+    
+    const radius = 8;
+    const marker = L.circleMarker([site.lat, site.lng], {
+      radius: radius,
+      fillColor: fillColor,
+      color: '#333',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    }).addTo(state.dashboardMap);
+
+    marker.bindPopup(`<strong>${site.name}</strong><br>Annual Rainfall: ${totalRainfall}mm`);
+  });
+}
+
+function renderMosquitoOverlay() {
+  const legendHTML = `
+    <div style="font-weight: bold; margin-bottom: 0.75rem; color: #2e5339;">Average Annual Mosquito Population</div>
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; row-gap: 0.5rem; align-items: center;">
+      <div style="width: 24px; height: 24px; background: #dc3545; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">High: 5,000+ mosquitoes</span>
+      
+      <div style="width: 24px; height: 24px; background: #ffc107; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Moderate: 3,000–5,000</span>
+      
+      <div style="width: 24px; height: 24px; background: #28a745; border-radius: 50%; border: 2px solid #333;"></div>
+      <span style="font-size: 13px;">Low: Below 3,000</span>
+    </div>
+  `;
+  
+  document.getElementById('mapLegendBox').innerHTML = legendHTML;
+
+  sampleData.sites.forEach((site, siteIndex) => {
+    const siteData = generateSiteClimateData(site);
+    const avgMosquitoes = siteData.annualMosquitoes.reduce((a, b) => a + b, 0) / siteData.annualMosquitoes.length;
+    
+    // Color gradient and size based on mosquito population
+    let fillColor = '#28a745'; // green (low)
+    let radius = 5;
+    
+    if (avgMosquitoes > 5000) {
+      fillColor = '#dc3545'; // red (high)
+      radius = 15;
+    } else if (avgMosquitoes > 3000) {
+      fillColor = '#ffc107'; // yellow (moderate)
+      radius = 10;
+    }
+    
+    const marker = L.circleMarker([site.lat, site.lng], {
+      radius: radius,
+      fillColor: fillColor,
+      color: '#333',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    }).addTo(state.dashboardMap);
+
+    marker.bindPopup(`<strong>${site.name}</strong><br>Avg Mosquitoes: ${Math.round(avgMosquitoes)}`);
+  });
+}
+
+function switchMapOverlay(mode) {
+  state.mapOverlayMode = mode;
+  
+  // Update button styling
+  ['infection', 'temperature', 'rainfall', 'mosquitoes'].forEach(m => {
+    const btn = document.getElementById(`btn-${m}`);
+    if (m === mode) {
+      btn.style.background = '#2e5339';
+      btn.style.color = 'white';
+    } else {
+      btn.style.background = '#e8f0ea';
+      btn.style.color = '#2e5339';
+    }
+  });
+  
+  updateDashboardMapForDisease();
 }
 
 function selectSite(site) {
@@ -1558,5 +1750,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb176dae162a686',t:'MTc3ODY3MzIyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb22730d52fa4be',t:'MTc3ODY4MDQ0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
