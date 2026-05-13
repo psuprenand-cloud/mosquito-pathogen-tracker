@@ -1709,13 +1709,21 @@ function renderCDCChart() {
           tension: 0.4,
           borderDash: [5, 5],
           borderWidth: 2,
-          pointRadius: 3
+          pointRadius: 5,
+          pointBackgroundColor: '#9b59b6',
+          pointBorderColor: '#9b59b6',
+          type: 'line'
         }
       ]
     },
     options: {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
+      plugins: {
+        datalabels: {
+          display: false
+        }
+      },
       scales: {
         x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
         y: {
@@ -1734,12 +1742,34 @@ function renderCDCChart() {
         },
         y2: {
           type: 'linear',
-          display: false,
+          display: true,
+          position: 'right',
+          title: { display: true, text: 'Avg Humidity (%)', font: { size: 16, weight: 'bold' } },
           min: 0,
-          max: 100
+          max: 100,
+          ticks: { color: '#9b59b6', font: { size: 15, weight: 'bold' } }
         }
       }
-    }
+    },
+    plugins: [{
+      afterDatasetsDraw(chart) {
+        const humidityDatasetIndex = 2;
+        const dataset = chart.data.datasets[humidityDatasetIndex];
+        const meta = chart.getDatasetMeta(humidityDatasetIndex);
+        const ctx = chart.ctx;
+
+        ctx.fillStyle = '#9b59b6';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+
+        meta.data.forEach((datapoint, index) => {
+          const { x, y } = datapoint.getProps(['x', 'y']);
+          const value = dataset.data[index];
+          ctx.fillText(Math.round(value) + '%', x, y - 12);
+        });
+      }
+    }]
   });
 }
 
@@ -1943,5 +1973,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2e2fec75aa540',t:'MTc3ODY4ODEzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2ed3232afe716',t:'MTc3ODY4ODU1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
