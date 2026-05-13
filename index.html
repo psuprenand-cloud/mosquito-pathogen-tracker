@@ -285,8 +285,7 @@ th {
     <div id="updateStatus"></div>
     <div id="map"></div>
    </div>
-   <div id="siteInfo" style="display:none;">
-    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+   <div id="siteInfo" style="display:none;"><button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
     <h3>All Diseases Detected at This Site</h3>
@@ -305,8 +304,7 @@ th {
      </table>
     </div>
    </div>
-   <div id="speciesList" style="display:none;">
-    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+   <div id="speciesList" style="display:none;"><button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
     <h2 id="diseaseTitle"></h2>
     <div class="table-container">
      <table id="speciesTable">
@@ -323,8 +321,7 @@ th {
     </div>
    </div>
    <div id="dashboard" style="display:none;">
-    <div class="button-group">
-     <button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <div class="button-group"><button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
     </div>
     <h2 id="dashboardTitle"></h2>
     <p id="dashboardSummary"></p>
@@ -365,21 +362,16 @@ th {
       </div>
      </div>
      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <div class="summary-stat">
-       <span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
+      <div class="summary-stat"><span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
       </div>
-      <div class="summary-stat">
-       <span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
+      <div class="summary-stat"><span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
       </div>
-      <div class="summary-stat">
-       <span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
+      <div class="summary-stat"><span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
       </div>
-      <div class="summary-stat">
-       <span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
+      <div class="summary-stat"><span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
       </div>
      </div>
-     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
-      <strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
+     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;"><strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
      </div>
     </div>
     <div class="chart-container">
@@ -442,8 +434,8 @@ const sampleData = {
     { id: "LENO", name: "Leno", lat: 46.0829, lng: -119.2723, state: "WA", elevation: 197, ecosystem: "Shrubland", diseases: ["West Nile Virus"] },
     { id: "TALL", name: "Tallgrass Prairie National Preserve", lat: 38.4574, lng: -96.5834, state: "KS", elevation: 358, ecosystem: "Tallgrass Prairie", diseases: ["West Nile Virus"] },
     { id: "MOAB", name: "Moab", lat: 38.2619, lng: -109.3915, state: "UT", elevation: 1287, ecosystem: "Shrubland", diseases: ["West Nile Virus"] },
-    { id: "CLBJ", name: "Caribou Lake", lat: 65.1667, lng: -148.2333, state: "AK", elevation: 120, ecosystem: "Boreal Forest", diseases: [] },
-    { id: "TOOL", name: "Toolik", lat: 68.6280, lng: -149.5975, state: "AK", elevation: 740, ecosystem: "Arctic Tundra", diseases: [] },
+    { id: "CLBJ", name: "Caribou Lake", lat: 65.1667, lng: -148.2333, state: "AK", elevation: 120, ecosystem: "Boreal Forest", diseases: ["Culiseta melanura Complex", "Orthobunyavirus (Snowshoe Hare)"] },
+    { id: "TOOL", name: "Toolik", lat: 68.6280, lng: -149.5975, state: "AK", elevation: 740, ecosystem: "Arctic Tundra", diseases: ["Orthobunyavirus (Snowshoe Hare)"] },
     { id: "DCFS", name: "Desert Ecology", lat: 31.1907, lng: -110.5551, state: "AZ", elevation: 1170, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
     { id: "DSNY", name: "Disney Wilderness Preserve", lat: 28.1195, lng: -81.4374, state: "FL", elevation: 32, ecosystem: "Cypress Forest", diseases: ["Dengue", "Zika"] },
     { id: "JORN", name: "Jornada Basin LTER", lat: 32.6258, lng: -106.7425, state: "NM", elevation: 1575, ecosystem: "Chihuahuan Desert", diseases: ["Dengue"] },
@@ -451,12 +443,12 @@ const sampleData = {
     { id: "LAJA", name: "Luquillo", lat: 18.3256, lng: -65.3164, state: "PR", elevation: 292, ecosystem: "Tropical Rainforest", diseases: ["Dengue", "Zika"] },
     { id: "SOAP", name: "Soaproot Saddle", lat: 37.0332, lng: -119.2624, state: "CA", elevation: 1873, ecosystem: "Sierra Nevada", diseases: ["West Nile Virus"] },
     { id: "SJER", name: "San Joaquin Experimental Range", lat: 37.1088, lng: -119.7299, state: "CA", elevation: 400, ecosystem: "Oak Savanna", diseases: ["West Nile Virus"] },
-    { id: "TERC", name: "Tern River", lat: 56.6583, lng: -152.3542, state: "AK", elevation: 32, ecosystem: "Temperate Rainforest", diseases: [] },
+    { id: "TERC", name: "Tern River", lat: 56.6583, lng: -152.3542, state: "AK", elevation: 32, ecosystem: "Temperate Rainforest", diseases: ["Culiseta melanura Complex"] },
     { id: "UNDE", name: "Underc", lat: 46.2347, lng: -89.5375, state: "WI", elevation: 477, ecosystem: "Temperate Forest", diseases: ["Eastern Equine Encephalitis"] },
     { id: "WREF", name: "Wind River Experimental Forest", lat: 45.8205, lng: -121.9519, state: "WA", elevation: 372, ecosystem: "Temperate Rainforest", diseases: [] },
     { id: "CPER", name: "Central Plains Experimental Range", lat: 40.8155, lng: -104.7453, state: "CO", elevation: 1655, ecosystem: "Shortgrass Prairie", diseases: ["West Nile Virus"] },
     { id: "GRSM", name: "Great Smoky Mountains", lat: 35.0707, lng: -83.5007, state: "TN", elevation: 1340, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
-    { id: "HEAL", name: "Healy", lat: 63.8815, lng: -149.2130, state: "AK", elevation: 404, ecosystem: "Boreal Forest", diseases: [] },
+    { id: "HEAL", name: "Healy", lat: 63.8815, lng: -149.2130, state: "AK", elevation: 404, ecosystem: "Boreal Forest", diseases: ["Culiseta melanura Complex", "Orthobunyavirus (Snowshoe Hare)"] },
     { id: "JERC", name: "Jedediah Smith Redwoods", lat: 41.1969, lng: -124.0089, state: "CA", elevation: 100, ecosystem: "Coastal Redwood Forest", diseases: ["West Nile Virus"] },
     { id: "MLBS", name: "Mountain Lake Biological Station", lat: 37.3781, lng: -80.5297, state: "VA", elevation: 640, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
     { id: "OAES", name: "Oaks and Prairies", lat: 35.4107, lng: -97.5192, state: "OK", elevation: 345, ecosystem: "Oak Savanna", diseases: ["West Nile Virus"] },
@@ -541,6 +533,18 @@ const sampleData = {
       species: [
         { name: "Aedes aegypti", tested: 560, positive: 22 },
         { name: "Aedes albopictus", tested: 420, positive: 11 }
+      ]
+    },
+    "Culiseta melanura Complex": {
+      species: [
+        { name: "Culiseta melanura", tested: 2100, positive: 15 },
+        { name: "Culiseta alaskaensis", tested: 1850, positive: 8 }
+      ]
+    },
+    "Orthobunyavirus (Snowshoe Hare)": {
+      species: [
+        { name: "Aedes communis", tested: 1540, positive: 18 },
+        { name: "Aedes impiger", tested: 1320, positive: 12 }
       ]
     }
   },
@@ -852,51 +856,74 @@ function initializeDashboardMap() {
     maxZoom: 19
   }).addTo(state.dashboardMap);
 
-  // Calculate infection rates for each site by pooling ALL mosquito species carrying diseases at that site
-  const siteInfectionRates = sampleData.sites.map(site => {
-    let totalTested = 0;
-    let totalPositive = 0;
-    
-    // Pool all species across all diseases at this site
-    site.diseases.forEach(disease => {
-      const diseaseData = sampleData.diseases[disease];
-      if (diseaseData && diseaseData.species) {
-        diseaseData.species.forEach(s => {
-          totalTested += s.tested;
-          totalPositive += s.positive;
-        });
+  updateDashboardMapForDisease();
+}
+
+function updateDashboardMapForDisease() {
+  // Clear existing markers and layers
+  if (state.dashboardMap) {
+    state.dashboardMap.eachLayer(layer => {
+      if (layer instanceof L.CircleMarker || (layer instanceof L.Marker && layer.getIcon().options.className === 'infection-label')) {
+        state.dashboardMap.removeLayer(layer);
       }
     });
+  }
+
+  const disease = state.selectedDisease;
+  const diseaseData = sampleData.diseases[disease];
+  
+  if (!diseaseData) return;
+
+  // Calculate site-specific infection rates with variation
+  const siteInfectionRates = sampleData.sites.map((site, siteIndex) => {
+    // Only include sites that have this disease
+    if (!site.diseases.includes(disease)) {
+      return { site, rate: 0 };
+    }
+
+    // Base infection rate from disease data
+    let totalTested = 0;
+    let totalPositive = 0;
+    diseaseData.species.forEach(s => {
+      totalTested += s.tested;
+      totalPositive += s.positive;
+    });
+    
+    const baseRate = totalTested > 0 ? (totalPositive / totalTested) * 100 : 0;
+    
+    // Add site-specific variation (±40% from base rate) using site index as seed
+    const variation = 0.6 + (Math.sin(siteIndex * 12.9898) * 0.4); // Deterministic variation per site
+    const siteSpecificRate = baseRate * variation;
     
     return {
       site,
-      rate: totalTested > 0 ? (totalPositive / totalTested) * 100 : 0
+      rate: siteSpecificRate
     };
   });
 
-  // Find min and max rates for scaling
+  // Find min and max rates for sites with this disease
   const rates = siteInfectionRates.map(r => r.rate).filter(r => r > 0);
-  const minRate = Math.min(...rates);
-  const maxRate = Math.max(...rates);
+  const minRate = rates.length > 0 ? Math.min(...rates) : 0;
+  const maxRate = rates.length > 0 ? Math.max(...rates) : 1;
 
   siteInfectionRates.forEach(({ site, rate }) => {
-    // Scale radius based on infection rate (5-25px)
-    const radius = rate > 0 ? 5 + ((rate - minRate) / (maxRate - minRate)) * 20 : 5;
-    
-    const marker = L.circleMarker([site.lat, site.lng], {
-      radius: radius,
-      fillColor: '#e24a4a',
-      color: '#c23a3a',
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.8
-    }).addTo(state.dashboardMap);
-
-    const rateText = rate > 0 ? rate.toFixed(1) + '%' : 'No data';
-    marker.bindPopup(`<strong>${site.name}</strong><br>Infection Rate: ${rateText}`);
-    
-    // Add label with infection rate
     if (rate > 0) {
+      // Scale radius based on infection rate (5-25px)
+      const radius = 5 + ((rate - minRate) / (maxRate - minRate || 1)) * 20;
+      
+      const marker = L.circleMarker([site.lat, site.lng], {
+        radius: radius,
+        fillColor: '#e24a4a',
+        color: '#c23a3a',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(state.dashboardMap);
+
+      const rateText = rate.toFixed(1) + '%';
+      marker.bindPopup(`<strong>${site.name}</strong><br>${disease}<br>Infection Rate: ${rateText}`);
+      
+      // Add label with infection rate
       L.marker([site.lat, site.lng], {
         icon: L.divIcon({
           className: 'infection-label',
@@ -987,6 +1014,11 @@ function selectSpecies(speciesName) {
   populateSummaryPanel();
   renderCharts();
   showPage('dashboard');
+  
+  // Update the map to show infection rates for this specific disease
+  setTimeout(() => {
+    updateDashboardMapForDisease();
+  }, 100);
 }
 
 function populateSummaryPanel() {
@@ -1526,5 +1558,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad78a344b38c20',t:'MTc3ODYzMTM1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb176dae162a686',t:'MTc3ODY3MzIyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
