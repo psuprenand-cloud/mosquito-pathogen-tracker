@@ -285,7 +285,8 @@ th {
     <div id="updateStatus"></div>
     <div id="map"></div>
    </div>
-   <div id="siteInfo" style="display:none;"><button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+   <div id="siteInfo" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
     <h3>All Diseases Detected at This Site</h3>
@@ -304,7 +305,8 @@ th {
      </table>
     </div>
    </div>
-   <div id="speciesList" style="display:none;"><button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+   <div id="speciesList" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
     <h2 id="diseaseTitle"></h2>
     <div class="table-container">
      <table id="speciesTable">
@@ -321,7 +323,8 @@ th {
     </div>
    </div>
    <div id="dashboard" style="display:none;">
-    <div class="button-group"><button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <div class="button-group">
+     <button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
     </div>
     <h2 id="dashboardTitle"></h2>
     <p id="dashboardSummary"></p>
@@ -362,16 +365,21 @@ th {
       </div>
      </div>
      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <div class="summary-stat"><span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
+      <div class="summary-stat">
+       <span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
+      <div class="summary-stat">
+       <span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
+      <div class="summary-stat">
+       <span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
+      <div class="summary-stat">
+       <span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
       </div>
      </div>
-     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;"><strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
+     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
+      <strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
      </div>
     </div>
     <div class="chart-container">
@@ -384,8 +392,7 @@ th {
     </div>
     <div class="chart-container">
      <h3>Infection Rates Across NEON Sites</h3>
-     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
+     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;"><button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
      </div>
      <div id="mapDashboard" style="height: 500px; border-radius: 8px; position: relative;"></div>
      <div id="mapLegendBox" style="background: white; border: 1px solid #ccc; border-radius: 6px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
@@ -459,7 +466,7 @@ const sampleData = {
     { id: "OAES", name: "Oaks and Prairies", lat: 35.4107, lng: -97.5192, state: "OK", elevation: 345, ecosystem: "Oak Savanna", diseases: ["West Nile Virus"] },
     { id: "ORNL", name: "Oak Ridge National Laboratory", lat: 35.9034, lng: -84.3279, state: "TN", elevation: 226, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
     { id: "PUUM", name: "Puu Makai", lat: 20.8049, lng: -156.4519, state: "HI", elevation: 2430, ecosystem: "Tropical Shrubland", diseases: ["Dengue"] },
-    { id: "RMNP", name: "Rocky Mountain National Park", lat: 40.4150, lng: -105.5859, state: "CO", elevation: 2925, ecosystem: "Alpine Meadow", diseases: [] },
+    { id: "RMNP", name: "Rocky Mountain National Park", lat: 40.4150, lng: -105.5859, state: "CO", elevation: 2925, ecosystem: "Alpine Meadow", diseases: ["Eastern Equine Encephalitis", "West Nile Virus"] },
     { id: "SAGU", name: "Saguaro National Monument", lat: 32.2508, lng: -110.7578, state: "AZ", elevation: 875, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
     { id: "SOAP", name: "Soaproot Saddle", lat: 37.0332, lng: -119.2624, state: "CA", elevation: 1873, ecosystem: "Sierra Nevada Mixed Conifer", diseases: ["West Nile Virus"] },
     { id: "SPHW", name: "Suggs Pond Hydrologically Active Wetland", lat: 32.3896, lng: -81.1915, state: "GA", elevation: 8, ecosystem: "Freshwater Marsh", diseases: ["West Nile Virus"] },
@@ -470,7 +477,7 @@ const sampleData = {
     { id: "VALE", name: "Vaira Ranch", lat: 38.4152, lng: -120.9500, state: "CA", elevation: 65, ecosystem: "Oak Grassland", diseases: ["West Nile Virus"] },
     { id: "WOOD", name: "Woodworth", lat: 47.1280, lng: -99.2411, state: "ND", elevation: 518, ecosystem: "Northern Prairie", diseases: ["West Nile Virus"] },
     { id: "WLOU", name: "Walnut Gulch", lat: 31.7365, lng: -110.4521, state: "AZ", elevation: 1503, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
-    { id: "YELL", name: "Yellowstone", lat: 44.2998, lng: -110.5891, state: "WY", elevation: 2286, ecosystem: "Subalpine Forest", diseases: [] },
+    { id: "YELL", name: "Yellowstone", lat: 44.2998, lng: -110.5891, state: "WY", elevation: 2286, ecosystem: "Subalpine Forest", diseases: ["West Nile Virus", "Eastern Equine Encephalitis"] },
     { id: "BLAN", name: "Blandy Experimental Farm", lat: 39.0667, lng: -78.0667, state: "VA", elevation: 155, ecosystem: "Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
     { id: "CWAL", name: "Coal Water and Land", lat: 40.2657, lng: -105.9064, state: "CO", elevation: 3039, ecosystem: "Montane Forest", diseases: [] },
     { id: "DESO", name: "Des Moines River", lat: 42.5400, lng: -93.4500, state: "IA", elevation: 295, ecosystem: "Deciduous Forest", diseases: ["West Nile Virus"] },
@@ -512,7 +519,7 @@ const sampleData = {
     { id: "WLOU", name: "Walnut Gulch", lat: 31.7365, lng: -110.4521, state: "AZ", elevation: 1503, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
     { id: "WOOD", name: "Woodworth", lat: 47.1280, lng: -99.2411, state: "ND", elevation: 518, ecosystem: "Northern Prairie", diseases: ["West Nile Virus"] },
     { id: "WREF", name: "Wind River", lat: 45.8205, lng: -121.9519, state: "WA", elevation: 372, ecosystem: "Temperate Rainforest", diseases: [] },
-    { id: "YELL", name: "Yellowstone", lat: 44.2998, lng: -110.5891, state: "WY", elevation: 2286, ecosystem: "Subalpine Forest", diseases: [] }
+    { id: "YELL", name: "Yellowstone", lat: 44.2998, lng: -110.5891, state: "WY", elevation: 2286, ecosystem: "Subalpine Forest", diseases: ["West Nile Virus", "Eastern Equine Encephalitis"] }
   ],
   diseases: {
     "West Nile Virus": {
@@ -2115,5 +2122,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb310386469a4be',t:'MTc3ODY4OTk5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb31ac8679032d8',t:'MTc3ODY5MDQyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
