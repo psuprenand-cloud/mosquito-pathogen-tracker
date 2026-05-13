@@ -19,7 +19,7 @@ html, body {
 }
 
 body {
-  font-family: "Arial", sans-serif;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
   background: #f4f7f5;
   color: #1b1b1b;
   font-size: 16px;
@@ -236,7 +236,7 @@ th {
 .summary-value {
   font-size: 24px;
   font-weight: bold;
-  color: #1b1b1b;
+  color: #000000;
 }
 
 .summary-stat {
@@ -285,7 +285,8 @@ th {
     <div id="updateStatus"></div>
     <div id="map"></div>
    </div>
-   <div id="siteInfo" style="display:none;"><button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+   <div id="siteInfo" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
     <h3>All Diseases Detected at This Site</h3>
@@ -304,7 +305,8 @@ th {
      </table>
     </div>
    </div>
-   <div id="speciesList" style="display:none;"><button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+   <div id="speciesList" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
     <h2 id="diseaseTitle"></h2>
     <div class="table-container">
      <table id="speciesTable">
@@ -321,7 +323,8 @@ th {
     </div>
    </div>
    <div id="dashboard" style="display:none;">
-    <div class="button-group"><button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <div class="button-group">
+     <button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
     </div>
     <h2 id="dashboardTitle"></h2>
     <p id="dashboardSummary"></p>
@@ -362,16 +365,21 @@ th {
       </div>
      </div>
      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <div class="summary-stat"><span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
+      <div class="summary-stat">
+       <span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
+      <div class="summary-stat">
+       <span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
+      <div class="summary-stat">
+       <span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
+      <div class="summary-stat">
+       <span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
       </div>
      </div>
-     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;"><strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
+     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
+      <strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
      </div>
     </div>
     <div class="chart-container">
@@ -384,8 +392,7 @@ th {
     </div>
     <div class="chart-container">
      <h3>Infection Rates Across NEON Sites</h3>
-     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
+     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;"><button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
      </div>
      <div id="mapDashboard" style="height: 500px; border-radius: 8px; position: relative;"></div>
      <div id="mapLegendBox" style="background: white; border: 1px solid #ccc; border-radius: 6px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
@@ -1370,9 +1377,10 @@ function renderMonthlyChart(siteData) {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
       scales: {
-        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes' } },
-        y1: { type: 'linear', display: true, position: 'center', title: { display: true, text: 'Rainfall (mm)' } },
-        y2: { type: 'linear', display: true, position: 'right', title: { display: true, text: `Temp (${tempLabel})` } }
+        x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
+        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        y1: { type: 'linear', display: true, position: 'center', title: { display: true, text: 'Rainfall (mm)', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        y2: { type: 'linear', display: true, position: 'right', title: { display: true, text: `Temperature (${tempLabel})`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } }
       }
     }
   });
@@ -1409,8 +1417,9 @@ function renderAnnualChart(siteData) {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
       scales: {
-        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes Caught' } },
-        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Infections Detected' } }
+        x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
+        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes Caught', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Infections Detected', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } }
       }
     }
   });
@@ -1465,23 +1474,27 @@ function renderTemperatureChart(siteData) {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
       scales: {
+        x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
         y: {
           type: 'linear',
           display: true,
           position: 'left',
-          title: { display: true, text: `Temperature (${tempLabel})` }
+          title: { display: true, text: `Temperature (${tempLabel})`, font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#000000', font: { size: 15, weight: 'bold' } }
         },
         y1: {
           type: 'linear',
           display: true,
           position: 'center',
-          title: { display: true, text: 'Rainfall (mm)' }
+          title: { display: true, text: 'Rainfall (mm)', font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#000000', font: { size: 15, weight: 'bold' } }
         },
         y2: {
           type: 'linear',
           display: true,
           position: 'right',
-          title: { display: true, text: 'Mosquito Population' }
+          title: { display: true, text: 'Mosquito Population', font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#000000', font: { size: 15, weight: 'bold' } }
         }
       }
     }
@@ -1532,19 +1545,20 @@ function renderCDCChart() {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
       scales: {
+        x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
         y: {
           type: 'linear',
           display: true,
           position: 'left',
-          title: { display: true, text: 'NEON Mosquito Infections' },
-          ticks: { color: '#2e5339' }
+          title: { display: true, text: 'NEON Mosquito Infections', font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#2e5339', font: { size: 15, weight: 'bold' } }
         },
         y1: {
           type: 'linear',
           display: true,
           position: 'right',
-          title: { display: true, text: `CDC ${disease} Cases in Humans` },
-          ticks: { color: '#e24a4a' }
+          title: { display: true, text: `CDC ${disease} Cases in Humans`, font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#e24a4a', font: { size: 15, weight: 'bold' } }
         }
       }
     }
@@ -1656,26 +1670,27 @@ function renderProjectionChart(siteData) {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
       scales: {
+        x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
         y: {
           type: 'linear',
           display: true,
           position: 'left',
-          title: { display: true, text: 'Mosquito Population' },
-          ticks: { color: '#2e5339' }
+          title: { display: true, text: 'Mosquito Population', font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#2e5339', font: { size: 15, weight: 'bold' } }
         },
         y1: {
           type: 'linear',
           display: true,
           position: 'center',
-          title: { display: true, text: 'Projected Cases' },
-          ticks: { color: '#e24a4a' }
+          title: { display: true, text: 'Projected Cases', font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#e24a4a', font: { size: 15, weight: 'bold' } }
         },
         y2: {
           type: 'linear',
           display: true,
           position: 'right',
-          title: { display: true, text: 'Temperature (°C)' },
-          ticks: { color: '#f59e0b' }
+          title: { display: true, text: 'Temperature (°C)', font: { size: 16, weight: 'bold' } },
+          ticks: { color: '#f59e0b', font: { size: 15, weight: 'bold' } }
         },
         y3: {
           type: 'linear',
@@ -1750,5 +1765,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb22730d52fa4be',t:'MTc3ODY4MDQ0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2555eb07432d8',t:'MTc3ODY4MjMzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
