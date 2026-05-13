@@ -289,8 +289,21 @@ th {
     <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
-    <h3>Diseases Detected</h3>
-    <div id="diseaseList"></div>
+    <h3>All Diseases Detected at This Site</h3>
+    <div class="table-container">
+     <table id="diseaseComparisonTable">
+      <thead>
+       <tr>
+        <th>Disease</th>
+        <th>Mosquitoes Tested</th>
+        <th>Positive Cases</th>
+        <th>Infection Rate</th>
+        <th>Action</th>
+       </tr>
+      </thead>
+      <tbody id="diseaseTableBody"></tbody>
+     </table>
+    </div>
    </div>
    <div id="speciesList" style="display:none;">
     <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
@@ -531,6 +544,8 @@ const sampleData = {
       ]
     }
   },
+  // Site-specific climate profiles (will be populated dynamically)
+  siteClimateProfiles: {},
   monthlyData: {
     months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     mosquitoes: [120, 135, 250, 420, 580, 720, 890, 850, 620, 380, 210, 145],
@@ -578,6 +593,213 @@ const sampleData = {
     habitatExpansion: [1.0, 1.18, 1.38, 1.62, 1.88, 2.16, 2.46]
   }
 };
+
+// Generate site-specific climate profiles based on ecosystem and location
+function generateSiteClimateData(site) {
+  const key = site.id;
+  if (sampleData.siteClimateProfiles[key]) return sampleData.siteClimateProfiles[key];
+
+  // Climate profiles by ecosystem type and latitude
+  const baseProfiles = {
+    // Tropical (Hawaii, Puerto Rico, Southern Florida)
+    'tropical': {
+      baseTemp: 24,
+      tempVariance: 3,
+      rainfallPattern: [120, 110, 95, 80, 70, 90, 140, 150, 130, 140, 135, 125],
+      peakMosquitoMonth: 8,
+      basePopulation: 800
+    },
+    // Subtropical (Florida, Southern Gulf Coast)
+    'subtropical': {
+      baseTemp: 20,
+      tempVariance: 12,
+      rainfallPattern: [65, 60, 75, 95, 110, 145, 170, 160, 130, 75, 65, 60],
+      peakMosquitoMonth: 7,
+      basePopulation: 650
+    },
+    // Temperate Deciduous (Northeast, Mid-Atlantic, Great Lakes)
+    'temperate_forest': {
+      baseTemp: 10,
+      tempVariance: 25,
+      rainfallPattern: [65, 58, 72, 88, 105, 95, 110, 108, 95, 82, 71, 68],
+      peakMosquitoMonth: 7,
+      basePopulation: 550
+    },
+    // Grassland/Prairie (Midwest, Great Plains)
+    'grassland': {
+      baseTemp: 10,
+      tempVariance: 28,
+      rainfallPattern: [25, 28, 45, 65, 95, 110, 95, 85, 65, 45, 35, 28],
+      peakMosquitoMonth: 8,
+      basePopulation: 480
+    },
+    // Desert (Southwest)
+    'desert': {
+      baseTemp: 18,
+      tempVariance: 30,
+      rainfallPattern: [8, 7, 5, 3, 2, 8, 45, 50, 35, 15, 8, 8],
+      peakMosquitoMonth: 8,
+      basePopulation: 200
+    },
+    // Boreal/Taiga (Alaska, Northern Canada)
+    'boreal': {
+      baseTemp: -5,
+      tempVariance: 35,
+      rainfallPattern: [40, 35, 35, 30, 40, 55, 65, 70, 60, 65, 60, 50],
+      peakMosquitoMonth: 6,
+      basePopulation: 300
+    },
+    // Arctic Tundra
+    'arctic': {
+      baseTemp: -10,
+      tempVariance: 25,
+      rainfallPattern: [15, 12, 12, 10, 15, 25, 35, 40, 30, 35, 25, 20],
+      peakMosquitoMonth: 7,
+      basePopulation: 150
+    },
+    // Rainforest (Pacific Northwest, Hawaii)
+    'rainforest': {
+      baseTemp: 12,
+      tempVariance: 8,
+      rainfallPattern: [180, 160, 150, 130, 110, 95, 80, 85, 100, 150, 190, 200],
+      peakMosquitoMonth: 6,
+      basePopulation: 600
+    }
+  };
+
+  // Map ecosystem to profile
+  const ecosystemMap = {
+    'Tropical Forest': 'tropical',
+    'Tropical Rainforest': 'tropical',
+    'Tropical Dry Forest': 'tropical',
+    'Tropical Shrubland': 'tropical',
+    'Tropical Montane Forest': 'tropical',
+    'Cypress Forest': 'subtropical',
+    'Scrub Forest': 'subtropical',
+    'Longleaf Pine': 'subtropical',
+    'Sonoran Desert': 'subtropical',
+    'Sonoran Desert': 'desert',
+    'Chihuahuan Desert': 'desert',
+    'Temperate Deciduous Forest': 'temperate_forest',
+    'Mixed Deciduous Forest': 'temperate_forest',
+    'Deciduous Forest': 'temperate_forest',
+    'Temperate Forest': 'temperate_forest',
+    'Estuarine Wetland': 'temperate_forest',
+    'Salt Marsh': 'temperate_forest',
+    'Freshwater Marsh': 'temperate_forest',
+    'Tallgrass Prairie': 'grassland',
+    'Shortgrass Prairie': 'grassland',
+    'Oak Savanna': 'grassland',
+    'Annual Grassland': 'grassland',
+    'Oak Grassland': 'grassland',
+    'Sagebrush Steppe': 'grassland',
+    'Semi-arid Shrubland': 'desert',
+    'Shrubland': 'desert',
+    'Slickrock Shrubland': 'desert',
+    'Boreal Forest': 'boreal',
+    'Arctic Tundra': 'arctic',
+    'Coastal Redwood Forest': 'rainforest',
+    'Coast Redwood Forest': 'rainforest',
+    'Temperate Rainforest': 'rainforest',
+    'Pacific Northwest Forest': 'rainforest',
+    'Douglas Fir Forest': 'rainforest',
+    'Sierra Nevada': 'temperate_forest',
+    'Sierra Nevada Mixed Conifer': 'temperate_forest',
+    'Sierra Nevada Conifer': 'temperate_forest',
+    'Subalpine Forest': 'boreal',
+    'Alpine Tundra': 'arctic',
+    'Alpine Meadow': 'boreal',
+    'Montane Forest': 'temperate_forest',
+    'Urban/Suburban': 'temperate_forest'
+  };
+
+  const ecosystemType = ecosystemMap[site.ecosystem] || 'temperate_forest';
+  const profile = baseProfiles[ecosystemType];
+
+  // Adjust for latitude (higher latitude = cooler, shorter season)
+  const latitudeAdjustment = Math.abs(site.lat) / 70; // 0 at equator, 1 at poles
+  const adjustedBaseTemp = profile.baseTemp - (latitudeAdjustment * 10);
+  const adjustedBasePopulation = profile.basePopulation * (1 - latitudeAdjustment * 0.5);
+
+  // Generate monthly data with realistic variation
+  const monthlyTemp = [];
+  const monthlyRainfall = [];
+  const monthlyMosquitoes = [];
+
+  for (let i = 0; i < 12; i++) {
+    // Temperature: seasonal variation
+    const dayOfYear = i * 30 + 15;
+    const seasonalTemp = adjustedBaseTemp + Math.cos((dayOfYear - 80) / 365.25 * Math.PI * 2) * (profile.tempVariance / 2);
+    monthlyTemp.push(Math.round(seasonalTemp * 10) / 10);
+
+    // Rainfall: use provided pattern
+    monthlyRainfall.push(Math.round(profile.rainfallPattern[i]));
+
+    // Mosquitoes: peak around profile.peakMosquitoMonth, affected by temperature and rainfall
+    const distFromPeak = Math.abs(i - profile.peakMosquitoMonth);
+    const seasonalMosquito = Math.exp(-((distFromPeak / 3) ** 2)) * adjustedBasePopulation;
+    // Temperature threshold: mosquitoes need minimum temp to thrive
+    const tempEffect = monthlyTemp[i] > 10 ? 1 + (Math.min(monthlyTemp[i], 30) - 10) / 20 : 0.1;
+    // Rainfall effect: more rain = more breeding grounds
+    const rainfallEffect = 1 + (monthlyRainfall[i] / 200);
+    
+    monthlyMosquitoes.push(Math.round(seasonalMosquito * tempEffect * rainfallEffect));
+  }
+
+  // Generate annual data (10 years)
+  const annualYears = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+  const annualMosquitoes = [];
+  const annualInfections = [];
+
+  // Base population with slight year-to-year variation and warming trend
+  let currentBase = adjustedBasePopulation * 6; // Annual total
+  for (let i = 0; i < annualYears.length; i++) {
+    // Random variation + warming trend
+    const variation = (Math.random() - 0.5) * 500;
+    const warmingTrend = i * 50; // Gradual increase
+    const yearPopulation = currentBase + variation + warmingTrend;
+    annualMosquitoes.push(Math.max(100, Math.round(yearPopulation)));
+
+    // Infections increase with mosquito population
+    const yearInfections = Math.round(yearPopulation / 30 + (Math.random() - 0.5) * 20);
+    annualInfections.push(Math.max(0, yearInfections));
+    
+    currentBase = yearPopulation;
+  }
+
+  // Temperature summary by season
+  const winterTemp = (monthlyTemp[0] + monthlyTemp[1] + monthlyTemp[11]) / 3;
+  const springTemp = (monthlyTemp[2] + monthlyTemp[3] + monthlyTemp[4]) / 3;
+  const summerTemp = (monthlyTemp[5] + monthlyTemp[6] + monthlyTemp[7]) / 3;
+  const fallTemp = (monthlyTemp[8] + monthlyTemp[9] + monthlyTemp[10]) / 3;
+
+  const profile_data = {
+    months: sampleData.monthlyData.months,
+    monthlyTemp,
+    monthlyRainfall,
+    monthlyMosquitoes,
+    annualYears,
+    annualMosquitoes,
+    annualInfections,
+    seasonalTemp: [winterTemp, springTemp, summerTemp, fallTemp],
+    seasons: ["Winter", "Spring", "Summer", "Fall"],
+    seasonalRainfall: [
+      (monthlyRainfall[0] + monthlyRainfall[1] + monthlyRainfall[11]) / 3,
+      (monthlyRainfall[2] + monthlyRainfall[3] + monthlyRainfall[4]) / 3,
+      (monthlyRainfall[5] + monthlyRainfall[6] + monthlyRainfall[7]) / 3,
+      (monthlyRainfall[8] + monthlyRainfall[9] + monthlyRainfall[10]) / 3
+    ],
+    seasonalMosquitoes: [
+      (monthlyMosquitoes[0] + monthlyMosquitoes[1] + monthlyMosquitoes[11]) / 3,
+      (monthlyMosquitoes[2] + monthlyMosquitoes[3] + monthlyMosquitoes[4]) / 3,
+      (monthlyMosquitoes[5] + monthlyMosquitoes[6] + monthlyMosquitoes[7]) / 3,
+      (monthlyMosquitoes[8] + monthlyMosquitoes[9] + monthlyMosquitoes[10]) / 3
+    ]
+  };
+
+  sampleData.siteClimateProfiles[key] = profile_data;
+  return profile_data;
+}
 
 function showPage(pageName) {
   document.querySelectorAll('#app > div').forEach(el => {
@@ -696,17 +918,40 @@ function selectSite(site) {
     <strong>Ecosystem:</strong> ${site.ecosystem}
   `;
 
-  const diseaseList = document.getElementById('diseaseList');
-  diseaseList.innerHTML = '';
+  // Build disease comparison table with ALL diseases at this site
+  const tbody = document.getElementById('diseaseTableBody');
+  tbody.innerHTML = '';
+
   site.diseases.forEach(disease => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.textContent = disease;
-    card.onclick = () => selectDisease(disease);
-    diseaseList.appendChild(card);
+    const diseaseData = sampleData.diseases[disease];
+    if (!diseaseData || !diseaseData.species) return;
+
+    // Aggregate across all species for this disease
+    let totalTested = 0;
+    let totalPositive = 0;
+    diseaseData.species.forEach(s => {
+      totalTested += s.tested;
+      totalPositive += s.positive;
+    });
+
+    const infectionRate = totalTested > 0 ? ((totalPositive / totalTested) * 100).toFixed(1) : 0;
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${disease}</strong></td>
+      <td>${totalTested.toLocaleString()}</td>
+      <td>${totalPositive}</td>
+      <td><span style="font-weight: bold; color: ${infectionRate > 5 ? '#dc3545' : infectionRate > 2 ? '#ffc107' : '#28a745'}">${infectionRate}%</span></td>
+      <td><button onclick="selectDiseaseForSite('${disease}')" style="padding: 0.5rem 1rem; font-size: 14px;">View Species</button></td>
+    `;
+    tbody.appendChild(row);
   });
 
   showPage('siteInfo');
+}
+
+function selectDiseaseForSite(diseaseName) {
+  selectDisease(diseaseName);
 }
 
 function selectDisease(diseaseName) {
@@ -832,44 +1077,47 @@ function populateSummaryPanel() {
 }
 
 function renderCharts() {
+  // Get site-specific data
+  const siteData = generateSiteClimateData(state.selectedSite);
+  
   // Monthly trends
-  renderMonthlyChart();
+  renderMonthlyChart(siteData);
   // Annual trends
-  renderAnnualChart();
+  renderAnnualChart(siteData);
   // Temperature summary
-  renderTemperatureChart();
+  renderTemperatureChart(siteData);
   // CDC comparison
   renderCDCChart();
   // Climate projections
-  renderProjectionChart();
+  renderProjectionChart(siteData);
   // Hydrology
   document.getElementById('hydrology').textContent = sampleData.hydrology;
 
   // Temp toggle
   document.getElementById('tempToggle').onchange = () => {
     state.isCelsius = !state.isCelsius;
-    renderMonthlyChart();
-    renderTemperatureChart();
+    renderMonthlyChart(siteData);
+    renderTemperatureChart(siteData);
   };
 }
 
-function renderMonthlyChart() {
+function renderMonthlyChart(siteData) {
   const ctx = document.getElementById('chartMonthly').getContext('2d');
   if (state.charts.monthly) state.charts.monthly.destroy();
 
   const tempData = state.isCelsius
-    ? sampleData.monthlyData.tempC
-    : sampleData.monthlyData.tempC.map(c => (c * 9/5) + 32);
+    ? siteData.monthlyTemp
+    : siteData.monthlyTemp.map(c => (c * 9/5) + 32);
   const tempLabel = state.isCelsius ? '°C' : '°F';
 
   state.charts.monthly = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: sampleData.monthlyData.months,
+      labels: siteData.months,
       datasets: [
         {
           label: 'Mosquitoes Caught',
-          data: sampleData.monthlyData.mosquitoes,
+          data: siteData.monthlyMosquitoes,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.1)',
           yAxisID: 'y',
@@ -878,7 +1126,7 @@ function renderMonthlyChart() {
         },
         {
           label: 'Rainfall (mm)',
-          data: sampleData.monthlyData.rainfall,
+          data: siteData.monthlyRainfall,
           borderColor: '#4a90e2',
           backgroundColor: 'rgba(74, 144, 226, 0.1)',
           yAxisID: 'y1',
@@ -906,18 +1154,18 @@ function renderMonthlyChart() {
   });
 }
 
-function renderAnnualChart() {
+function renderAnnualChart(siteData) {
   const ctx = document.getElementById('chartAnnual').getContext('2d');
   if (state.charts.annual) state.charts.annual.destroy();
 
   state.charts.annual = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: sampleData.annualData.years,
+      labels: siteData.annualYears,
       datasets: [
         {
           label: 'Mosquitoes Caught',
-          data: sampleData.annualData.mosquitoes,
+          data: siteData.annualMosquitoes,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.1)',
           yAxisID: 'y',
@@ -926,7 +1174,7 @@ function renderAnnualChart() {
         },
         {
           label: 'Infections Detected',
-          data: sampleData.annualData.infections,
+          data: siteData.annualInfections,
           borderColor: '#e24a4a',
           yAxisID: 'y1',
           tension: 0.4
@@ -944,35 +1192,19 @@ function renderAnnualChart() {
   });
 }
 
-function renderTemperatureChart() {
+function renderTemperatureChart(siteData) {
   const ctx = document.getElementById('chartTemp').getContext('2d');
   if (state.charts.temp) state.charts.temp.destroy();
 
   const tempData = state.isCelsius
-    ? sampleData.tempData.tempC
-    : sampleData.tempData.tempC.map(c => (c * 9/5) + 32);
+    ? siteData.seasonalTemp
+    : siteData.seasonalTemp.map(c => (c * 9/5) + 32);
   const tempLabel = state.isCelsius ? '°C' : '°F';
-
-  // Calculate average mosquito population per season
-  const seasonalMosquitoAvg = [
-    (sampleData.monthlyData.mosquitoes[0] + sampleData.monthlyData.mosquitoes[1] + sampleData.monthlyData.mosquitoes[11]) / 3, // Winter
-    (sampleData.monthlyData.mosquitoes[2] + sampleData.monthlyData.mosquitoes[3] + sampleData.monthlyData.mosquitoes[4]) / 3, // Spring
-    (sampleData.monthlyData.mosquitoes[5] + sampleData.monthlyData.mosquitoes[6] + sampleData.monthlyData.mosquitoes[7]) / 3, // Summer
-    (sampleData.monthlyData.mosquitoes[8] + sampleData.monthlyData.mosquitoes[9] + sampleData.monthlyData.mosquitoes[10]) / 3  // Fall
-  ];
-
-  // Calculate seasonal rainfall average
-  const seasonalRainfallAvg = [
-    (sampleData.monthlyData.rainfall[0] + sampleData.monthlyData.rainfall[1] + sampleData.monthlyData.rainfall[11]) / 3, // Winter
-    (sampleData.monthlyData.rainfall[2] + sampleData.monthlyData.rainfall[3] + sampleData.monthlyData.rainfall[4]) / 3, // Spring
-    (sampleData.monthlyData.rainfall[5] + sampleData.monthlyData.rainfall[6] + sampleData.monthlyData.rainfall[7]) / 3, // Summer
-    (sampleData.monthlyData.rainfall[8] + sampleData.monthlyData.rainfall[9] + sampleData.monthlyData.rainfall[10]) / 3  // Fall
-  ];
 
   state.charts.temp = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: sampleData.tempData.seasons,
+      labels: siteData.seasons,
       datasets: [
         {
           label: `Temperature (${tempLabel})`,
@@ -985,7 +1217,7 @@ function renderTemperatureChart() {
         },
         {
           label: 'Rainfall (mm)',
-          data: seasonalRainfallAvg,
+          data: siteData.seasonalRainfall,
           backgroundColor: 'rgba(74, 144, 226, 0.3)',
           borderColor: '#4a90e2',
           borderWidth: 2,
@@ -994,7 +1226,7 @@ function renderTemperatureChart() {
         },
         {
           label: 'Avg Mosquito Population',
-          data: seasonalMosquitoAvg,
+          data: siteData.seasonalMosquitoes,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.2)',
           borderWidth: 3,
@@ -1095,20 +1327,62 @@ function renderCDCChart() {
   });
 }
 
-function renderProjectionChart() {
+function renderProjectionChart(siteData) {
   const ctx = document.getElementById('chartProjection').getContext('2d');
   if (state.charts.projection) state.charts.projection.destroy();
 
-  const proj = sampleData.projectionData;
+  // Generate site-specific projections based on current trends
+  const currentPopulation = siteData.annualMosquitoes[siteData.annualMosquitoes.length - 1];
+  const currentInfections = siteData.annualInfections[siteData.annualInfections.length - 1];
+  
+  // Calculate trend
+  const yearOverYearGrowth = (siteData.annualMosquitoes[siteData.annualMosquitoes.length - 1] - 
+                               siteData.annualMosquitoes[siteData.annualMosquitoes.length - 2]) / 
+                              siteData.annualMosquitoes[siteData.annualMosquitoes.length - 2];
+
+  const projectionYears = [2024, 2029, 2034, 2039, 2044, 2049, 2054];
+  const projectedMosquitoPopulation = [];
+  const projectedDiseaseTransmission = [];
+  const projectedTemperatureC = [];
+  const projectedRainfallMM = [];
+  const projectedHabitatExpansion = [];
+
+  // Generate projections with site-specific growth rates
+  let basePop = currentPopulation;
+  const baseTemp = (siteData.seasonalTemp[0] + siteData.seasonalTemp[1] + siteData.seasonalTemp[2] + siteData.seasonalTemp[3]) / 4;
+  let currentTemp = baseTemp;
+
+  for (let i = 0; i < projectionYears.length; i++) {
+    // Mosquito population growth
+    const mosquitoGrowth = basePop * Math.pow(1 + yearOverYearGrowth, i);
+    projectedMosquitoPopulation.push(Math.round(mosquitoGrowth));
+
+    // Disease transmission (increases with population)
+    const transmissionGrowth = currentInfections * Math.pow(1.05 + yearOverYearGrowth, i);
+    projectedDiseaseTransmission.push(Math.round(transmissionGrowth));
+
+    // Temperature increase (0.3°C per 5 years = 0.06°C/year)
+    const tempIncrease = currentTemp + (i * 0.06 * 5);
+    projectedTemperatureC.push(Math.round(tempIncrease * 10) / 10);
+
+    // Rainfall variation (±5% of current average)
+    const avgRainfall = (siteData.seasonalRainfall[0] + siteData.seasonalRainfall[1] + siteData.seasonalRainfall[2] + siteData.seasonalRainfall[3]) / 4 * 4;
+    const rainfallVariation = avgRainfall * (1 + (Math.sin(i) * 0.05));
+    projectedRainfallMM.push(Math.round(rainfallVariation));
+
+    // Habitat expansion (increased mosquito range due to warming)
+    const habitatExpansion = 1 + (i * 0.18);
+    projectedHabitatExpansion.push(Math.round(habitatExpansion * 100) / 100);
+  }
 
   state.charts.projection = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: proj.years,
+      labels: projectionYears,
       datasets: [
         {
           label: 'Projected Mosquito Population',
-          data: proj.mosquitoPopulation,
+          data: projectedMosquitoPopulation,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.1)',
           yAxisID: 'y',
@@ -1120,7 +1394,7 @@ function renderProjectionChart() {
         },
         {
           label: 'Projected Disease Transmission Events',
-          data: proj.diseaseTransmission,
+          data: projectedDiseaseTransmission,
           borderColor: '#e24a4a',
           backgroundColor: 'rgba(226, 74, 74, 0.1)',
           yAxisID: 'y1',
@@ -1132,7 +1406,7 @@ function renderProjectionChart() {
         },
         {
           label: 'Temperature Increase (°C)',
-          data: proj.temperatureC,
+          data: projectedTemperatureC,
           borderColor: '#f59e0b',
           yAxisID: 'y2',
           tension: 0.4,
@@ -1143,7 +1417,7 @@ function renderProjectionChart() {
         },
         {
           label: 'Annual Rainfall (mm)',
-          data: proj.rainfallMM,
+          data: projectedRainfallMM,
           borderColor: '#3b82f6',
           yAxisID: 'y3',
           tension: 0.4,
@@ -1252,5 +1526,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad6c1085ea8c20',t:'MTc3ODYzMDgzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad78a344b38c20',t:'MTc3ODYzMTM1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
