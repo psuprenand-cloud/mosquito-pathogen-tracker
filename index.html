@@ -395,7 +395,7 @@ th {
      <p id="hydrology"></p>
     </div>
     <div class="chart-container">
-     <h3>Temperature Summary (5-Year Average)</h3>
+     <h3>Seasonal Climate Profile (5-Year Average)</h3>
      <canvas id="chartTemp"></canvas>
     </div>
     <div class="chart-container">
@@ -1543,6 +1543,13 @@ function renderTemperatureChart(siteData) {
     : siteData.seasonalTemp.map(c => (c * 9/5) + 32);
   const tempLabel = state.isCelsius ? '°C' : '°F';
 
+  // Determine if we have negative temperatures
+  const hasNegativeTemp = tempData.some(t => t < 0);
+  
+  // Calculate appropriate scale for negative temps
+  const minTemp = Math.min(...tempData);
+  const yMin = hasNegativeTemp ? Math.floor(minTemp) - 5 : 0;
+
   state.charts.temp = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1553,7 +1560,7 @@ function renderTemperatureChart(siteData) {
           data: tempData,
           backgroundColor: '#e24a4a',
           borderColor: '#c23a3a',
-          borderWidth: 1,
+          borderWidth: 2,
           yAxisID: 'y',
           type: 'bar'
         },
@@ -1600,6 +1607,7 @@ function renderTemperatureChart(siteData) {
           type: 'linear',
           display: true,
           position: 'left',
+          min: yMin,
           title: { display: true, text: `Temperature (${tempLabel})`, font: { size: 16, weight: 'bold' } },
           ticks: { color: '#000000', font: { size: 15, weight: 'bold' } }
         },
@@ -1935,5 +1943,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2c8c0f2690f13',t:'MTc3ODY4NzA2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2e2fec75aa540',t:'MTc3ODY4ODEzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
