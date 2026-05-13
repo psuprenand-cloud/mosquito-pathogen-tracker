@@ -285,15 +285,13 @@ th {
     <div id="updateStatus"></div>
     <div id="map"></div>
    </div>
-   <div id="siteInfo" style="display:none;">
-    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+   <div id="siteInfo" style="display:none;"><button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
     <h3>Diseases Detected</h3>
     <div id="diseaseList"></div>
    </div>
-   <div id="speciesList" style="display:none;">
-    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+   <div id="speciesList" style="display:none;"><button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
     <h2 id="diseaseTitle"></h2>
     <div class="table-container">
      <table id="speciesTable">
@@ -310,8 +308,7 @@ th {
     </div>
    </div>
    <div id="dashboard" style="display:none;">
-    <div class="button-group">
-     <button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <div class="button-group"><button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
     </div>
     <h2 id="dashboardTitle"></h2>
     <p id="dashboardSummary"></p>
@@ -352,21 +349,16 @@ th {
       </div>
      </div>
      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <div class="summary-stat">
-       <span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
+      <div class="summary-stat"><span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
       </div>
-      <div class="summary-stat">
-       <span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
+      <div class="summary-stat"><span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
       </div>
-      <div class="summary-stat">
-       <span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
+      <div class="summary-stat"><span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
       </div>
-      <div class="summary-stat">
-       <span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
+      <div class="summary-stat"><span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
       </div>
      </div>
-     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
-      <strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
+     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;"><strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
      </div>
     </div>
     <div class="chart-container">
@@ -393,6 +385,12 @@ th {
      <h3>NEON vs CDC: Human Cases vs Mosquito Infections</h3>
      <p style="font-size: 14px; color: #666; margin-bottom: 1rem;">Comparing vector surveillance (NEON) with human disease surveillance (CDC). Correlation indicates outbreak risk.</p>
      <canvas id="chartCDC"></canvas>
+    </div>
+    <div class="chart-container">
+     <h3>Climate Projections &amp; Disease Risk (2025-2054)</h3>
+     <p style="font-size: 14px; color: #666; margin-bottom: 1rem;">30-year forecast showing how warming climate may expand mosquito habitat and disease transmission. Based on climate models.</p>
+     <canvas id="chartProjection"></canvas>
+     <p style="font-size: 12px; color: #999; margin-top: 1rem; font-style: italic;">Note: Projections assume mid-range warming scenarios. Actual outcomes depend on climate policy, public health interventions, and ecological factors.</p>
     </div>
    </div>
   </div>
@@ -562,6 +560,14 @@ const sampleData = {
       humanDeaths: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
       years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
     }
+  },
+  projectionData: {
+    years: [2024, 2029, 2034, 2039, 2044, 2049, 2054],
+    mosquitoPopulation: [7350, 8200, 9400, 10800, 12100, 13500, 14900],
+    diseaseTransmission: [285, 350, 445, 560, 680, 810, 950],
+    temperatureC: [16.2, 17.1, 18.0, 18.9, 19.8, 20.7, 21.6],
+    rainfallMM: [850, 890, 920, 950, 980, 1010, 1040],
+    habitatExpansion: [1.0, 1.18, 1.38, 1.62, 1.88, 2.16, 2.46]
   }
 };
 
@@ -826,6 +832,8 @@ function renderCharts() {
   renderTemperatureChart();
   // CDC comparison
   renderCDCChart();
+  // Climate projections
+  renderProjectionChart();
   // Hydrology
   document.getElementById('hydrology').textContent = sampleData.hydrology;
 
@@ -1079,6 +1087,101 @@ function renderCDCChart() {
   });
 }
 
+function renderProjectionChart() {
+  const ctx = document.getElementById('chartProjection').getContext('2d');
+  if (state.charts.projection) state.charts.projection.destroy();
+
+  const proj = sampleData.projectionData;
+
+  state.charts.projection = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: proj.years,
+      datasets: [
+        {
+          label: 'Projected Mosquito Population',
+          data: proj.mosquitoPopulation,
+          borderColor: '#2e5339',
+          backgroundColor: 'rgba(46, 83, 57, 0.1)',
+          yAxisID: 'y',
+          tension: 0.4,
+          fill: true,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#2e5339'
+        },
+        {
+          label: 'Projected Disease Transmission Events',
+          data: proj.diseaseTransmission,
+          borderColor: '#e24a4a',
+          backgroundColor: 'rgba(226, 74, 74, 0.1)',
+          yAxisID: 'y1',
+          tension: 0.4,
+          fill: true,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#e24a4a'
+        },
+        {
+          label: 'Temperature Increase (°C)',
+          data: proj.temperatureC,
+          borderColor: '#f59e0b',
+          yAxisID: 'y2',
+          tension: 0.4,
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 4,
+          pointBackgroundColor: '#f59e0b'
+        },
+        {
+          label: 'Annual Rainfall (mm)',
+          data: proj.rainfallMM,
+          borderColor: '#3b82f6',
+          yAxisID: 'y3',
+          tension: 0.4,
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 4,
+          pointBackgroundColor: '#3b82f6'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          title: { display: true, text: 'Mosquito Population' },
+          ticks: { color: '#2e5339' }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'center',
+          title: { display: true, text: 'Projected Cases' },
+          ticks: { color: '#e24a4a' }
+        },
+        y2: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          title: { display: true, text: 'Temperature (°C)' },
+          ticks: { color: '#f59e0b' }
+        },
+        y3: {
+          type: 'linear',
+          display: false,
+          title: { display: true, text: 'Rainfall (mm)' },
+          ticks: { color: '#3b82f6' }
+        }
+      }
+    }
+  });
+}
+
 async function checkForUpdates() {
   const statusDiv = document.getElementById('updateStatus');
   const fetchBtn = event.target.closest('button');
@@ -1117,5 +1220,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad6041e0225eab',t:'MTc3ODYzMDM1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad66cad66c5eab',t:'MTc3ODYzMDYyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
