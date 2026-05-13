@@ -621,6 +621,8 @@ function generateSiteClimateData(site) {
     'tropical': {
       baseTemp: 24,
       tempVariance: 3,
+      baseHumidity: 85,
+      humidityVariance: 8,
       rainfallPattern: [120, 110, 95, 80, 70, 90, 140, 150, 130, 140, 135, 125],
       peakMosquitoMonth: 8,
       basePopulation: 800
@@ -629,6 +631,8 @@ function generateSiteClimateData(site) {
     'subtropical': {
       baseTemp: 20,
       tempVariance: 12,
+      baseHumidity: 75,
+      humidityVariance: 15,
       rainfallPattern: [65, 60, 75, 95, 110, 145, 170, 160, 130, 75, 65, 60],
       peakMosquitoMonth: 7,
       basePopulation: 650
@@ -637,6 +641,8 @@ function generateSiteClimateData(site) {
     'temperate_forest': {
       baseTemp: 10,
       tempVariance: 25,
+      baseHumidity: 70,
+      humidityVariance: 20,
       rainfallPattern: [65, 58, 72, 88, 105, 95, 110, 108, 95, 82, 71, 68],
       peakMosquitoMonth: 7,
       basePopulation: 550
@@ -645,6 +651,8 @@ function generateSiteClimateData(site) {
     'grassland': {
       baseTemp: 10,
       tempVariance: 28,
+      baseHumidity: 55,
+      humidityVariance: 25,
       rainfallPattern: [25, 28, 45, 65, 95, 110, 95, 85, 65, 45, 35, 28],
       peakMosquitoMonth: 8,
       basePopulation: 480
@@ -653,6 +661,8 @@ function generateSiteClimateData(site) {
     'desert': {
       baseTemp: 18,
       tempVariance: 30,
+      baseHumidity: 30,
+      humidityVariance: 20,
       rainfallPattern: [8, 7, 5, 3, 2, 8, 45, 50, 35, 15, 8, 8],
       peakMosquitoMonth: 8,
       basePopulation: 200
@@ -661,6 +671,8 @@ function generateSiteClimateData(site) {
     'boreal': {
       baseTemp: -5,
       tempVariance: 35,
+      baseHumidity: 65,
+      humidityVariance: 18,
       rainfallPattern: [40, 35, 35, 30, 40, 55, 65, 70, 60, 65, 60, 50],
       peakMosquitoMonth: 6,
       basePopulation: 300
@@ -669,6 +681,8 @@ function generateSiteClimateData(site) {
     'arctic': {
       baseTemp: -10,
       tempVariance: 25,
+      baseHumidity: 60,
+      humidityVariance: 15,
       rainfallPattern: [15, 12, 12, 10, 15, 25, 35, 40, 30, 35, 25, 20],
       peakMosquitoMonth: 7,
       basePopulation: 150
@@ -677,6 +691,8 @@ function generateSiteClimateData(site) {
     'rainforest': {
       baseTemp: 12,
       tempVariance: 8,
+      baseHumidity: 80,
+      humidityVariance: 10,
       rainfallPattern: [180, 160, 150, 130, 110, 95, 80, 85, 100, 150, 190, 200],
       peakMosquitoMonth: 6,
       basePopulation: 600
@@ -740,6 +756,7 @@ function generateSiteClimateData(site) {
   // Generate monthly data with realistic variation
   const monthlyTemp = [];
   const monthlyRainfall = [];
+  const monthlyHumidity = [];
   const monthlyMosquitoes = [];
 
   for (let i = 0; i < 12; i++) {
@@ -751,15 +768,31 @@ function generateSiteClimateData(site) {
     // Rainfall: use provided pattern
     monthlyRainfall.push(Math.round(profile.rainfallPattern[i]));
 
-    // Mosquitoes: peak around profile.peakMosquitoMonth, affected by temperature and rainfall
+    // Humidity: derived from rainfall and temperature, adjusted by latitude
+    const adjustedBaseHumidity = profile.baseHumidity - (latitudeAdjustment * 15); // Lower humidity at extremes
+    const rainfallHumidityEffect = (monthlyRainfall[i] / 100) * 20; // More rain = higher humidity (up to +20%)
+    const tempHumidityEffect = -Math.abs(seasonalTemp - profile.baseTemp) * 0.5; // Cooler = higher humidity
+    const monthlyHumidityValue = Math.min(95, Math.max(20, adjustedBaseHumidity + rainfallHumidityEffect + tempHumidityEffect + (Math.sin(i) * profile.humidityVariance)));
+    monthlyHumidity.push(Math.round(monthlyHumidityValue));
+
+    // Mosquitoes: peak around profile.peakMosquitoMonth, affected by temperature, rainfall, and humidity
     const distFromPeak = Math.abs(i - profile.peakMosquitoMonth);
     const seasonalMosquito = Math.exp(-((distFromPeak / 3) ** 2)) * adjustedBasePopulation;
     // Temperature threshold: mosquitoes need minimum temp to thrive
     const tempEffect = monthlyTemp[i] > 10 ? 1 + (Math.min(monthlyTemp[i], 30) - 10) / 20 : 0.1;
     // Rainfall effect: more rain = more breeding grounds
     const rainfallEffect = 1 + (monthlyRainfall[i] / 200);
+    // Humidity effect: most mosquitoes thrive at 60-80% humidity; drop off outside this range
+    let humidityEffect = 1;
+    if (monthlyHumidity[i] < 40) {
+      humidityEffect = 0.5; // Too dry
+    } else if (monthlyHumidity[i] < 60) {
+      humidityEffect = 0.8; // Below optimal
+    } else if (monthlyHumidity[i] > 85) {
+      humidityEffect = 0.9; // Slightly inhibited at very high humidity
+    }
     
-    monthlyMosquitoes.push(Math.round(seasonalMosquito * tempEffect * rainfallEffect));
+    monthlyMosquitoes.push(Math.round(seasonalMosquito * tempEffect * rainfallEffect * humidityEffect));
   }
 
   // Generate annual data (10 years)
@@ -793,6 +826,7 @@ function generateSiteClimateData(site) {
     months: sampleData.monthlyData.months,
     monthlyTemp,
     monthlyRainfall,
+    monthlyHumidity,
     monthlyMosquitoes,
     annualYears,
     annualMosquitoes,
@@ -810,6 +844,12 @@ function generateSiteClimateData(site) {
       (monthlyMosquitoes[2] + monthlyMosquitoes[3] + monthlyMosquitoes[4]) / 3,
       (monthlyMosquitoes[5] + monthlyMosquitoes[6] + monthlyMosquitoes[7]) / 3,
       (monthlyMosquitoes[8] + monthlyMosquitoes[9] + monthlyMosquitoes[10]) / 3
+    ],
+    seasonalHumidity: [
+      (monthlyHumidity[0] + monthlyHumidity[1] + monthlyHumidity[11]) / 3,
+      (monthlyHumidity[2] + monthlyHumidity[3] + monthlyHumidity[4]) / 3,
+      (monthlyHumidity[5] + monthlyHumidity[6] + monthlyHumidity[7]) / 3,
+      (monthlyHumidity[8] + monthlyHumidity[9] + monthlyHumidity[10]) / 3
     ]
   };
 
@@ -1278,14 +1318,24 @@ function populateSummaryPanel() {
   };
   document.getElementById('hotspot').textContent = hotspots[disease] || 'Multiple regions';
 
-  // Climate correlation
-  const climateCorrs = {
-    'West Nile Virus': 'Temp >18°C',
-    'Eastern Equine Encephalitis': 'Temp >15°C, Humid',
-    'Dengue': 'Temp >20°C, High Humidity',
-    'Zika': 'Temp >20°C, Tropical'
-  };
-  document.getElementById('climateCorr').textContent = climateCorrs[disease] || 'Warm seasons';
+  // Climate correlation - Calculate from actual site data
+  const siteData = generateSiteClimateData(state.selectedSite);
+  const avgHumidity = (siteData.seasonalHumidity[0] + siteData.seasonalHumidity[1] + siteData.seasonalHumidity[2] + siteData.seasonalHumidity[3]) / 4;
+  const avgTemp = (siteData.seasonalTemp[0] + siteData.seasonalTemp[1] + siteData.seasonalTemp[2] + siteData.seasonalTemp[3]) / 4;
+  
+  let climateDesc = '';
+  if (disease === 'West Nile Virus') {
+    climateDesc = `Temp >${avgTemp.toFixed(1)}°C, ${avgHumidity.toFixed(0)}% humidity`;
+  } else if (disease === 'Eastern Equine Encephalitis') {
+    climateDesc = `Temp >${avgTemp.toFixed(1)}°C, ${avgHumidity.toFixed(0)}% humidity`;
+  } else if (disease === 'Dengue') {
+    climateDesc = `Temp >${avgTemp.toFixed(1)}°C, ${avgHumidity.toFixed(0)}% humidity (high)`;
+  } else if (disease === 'Zika') {
+    climateDesc = `Temp >${avgTemp.toFixed(1)}°C, ${avgHumidity.toFixed(0)}% humidity (tropical)`;
+  } else {
+    climateDesc = 'Warm seasons';
+  }
+  document.getElementById('climateCorr').textContent = climateDesc;
 
   // Related species alert
   const relatedMap = {
@@ -1370,6 +1420,15 @@ function renderMonthlyChart(siteData) {
           borderColor: '#e24a4a',
           yAxisID: 'y2',
           tension: 0.4
+        },
+        {
+          label: 'Humidity (%)',
+          data: siteData.monthlyHumidity,
+          borderColor: '#9b59b6',
+          yAxisID: 'y3',
+          tension: 0.4,
+          borderDash: [5, 5],
+          borderWidth: 2
         }
       ]
     },
@@ -1380,7 +1439,8 @@ function renderMonthlyChart(siteData) {
         x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
         y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
         y1: { type: 'linear', display: true, position: 'center', title: { display: true, text: 'Rainfall (mm)', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
-        y2: { type: 'linear', display: true, position: 'right', title: { display: true, text: `Temperature (${tempLabel})`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } }
+        y2: { type: 'linear', display: true, position: 'right', title: { display: true, text: `Temperature (${tempLabel})`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        y3: { type: 'linear', display: false, min: 0, max: 100 }
       }
     }
   });
@@ -1458,6 +1518,15 @@ function renderTemperatureChart(siteData) {
           type: 'bar'
         },
         {
+          label: 'Avg Humidity (%)',
+          data: siteData.seasonalHumidity,
+          backgroundColor: 'rgba(155, 89, 182, 0.2)',
+          borderColor: '#9b59b6',
+          borderWidth: 2,
+          yAxisID: 'y3',
+          type: 'bar'
+        },
+        {
           label: 'Avg Mosquito Population',
           data: siteData.seasonalMosquitoes,
           borderColor: '#2e5339',
@@ -1495,6 +1564,12 @@ function renderTemperatureChart(siteData) {
           position: 'right',
           title: { display: true, text: 'Mosquito Population', font: { size: 16, weight: 'bold' } },
           ticks: { color: '#000000', font: { size: 15, weight: 'bold' } }
+        },
+        y3: {
+          type: 'linear',
+          display: false,
+          min: 0,
+          max: 100
         }
       }
     }
@@ -1513,6 +1588,14 @@ function renderCDCChart() {
   // Get NEON infection data (scale to comparable range)
   const neonInfectionData = sampleData.annualData.infections;
   const cdcCasesData = cdcDisease.humanCases;
+  
+  // Get humidity data for NEON sites
+  const siteData = generateSiteClimateData(state.selectedSite);
+  const humidityByYear = Array(siteData.annualYears.length).fill(0).map((_, i) => {
+    const avgHumidity = (siteData.seasonalHumidity[0] + siteData.seasonalHumidity[1] + siteData.seasonalHumidity[2] + siteData.seasonalHumidity[3]) / 4;
+    // Add slight year-to-year variation
+    return Math.min(100, Math.max(20, avgHumidity + (Math.sin(i * 0.5) * 5)));
+  });
   
   state.charts.cdc = new Chart(ctx, {
     type: 'line',
@@ -1538,6 +1621,16 @@ function renderCDCChart() {
           tension: 0.4,
           fill: true,
           borderWidth: 3
+        },
+        {
+          label: 'Avg Humidity (%)',
+          data: humidityByYear,
+          borderColor: '#9b59b6',
+          yAxisID: 'y2',
+          tension: 0.4,
+          borderDash: [5, 5],
+          borderWidth: 2,
+          pointRadius: 3
         }
       ]
     },
@@ -1556,9 +1649,15 @@ function renderCDCChart() {
         y1: {
           type: 'linear',
           display: true,
-          position: 'right',
+          position: 'center',
           title: { display: true, text: `CDC ${disease} Cases in Humans`, font: { size: 16, weight: 'bold' } },
           ticks: { color: '#e24a4a', font: { size: 15, weight: 'bold' } }
+        },
+        y2: {
+          type: 'linear',
+          display: false,
+          min: 0,
+          max: 100
         }
       }
     }
@@ -1765,5 +1864,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2555eb07432d8',t:'MTc3ODY4MjMzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb26ff1f14fe0d6',t:'MTc3ODY4MzQyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
