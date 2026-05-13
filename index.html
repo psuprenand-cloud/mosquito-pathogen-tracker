@@ -285,7 +285,8 @@ th {
     <div id="updateStatus"></div>
     <div id="map"></div>
    </div>
-   <div id="siteInfo" style="display:none;"><button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+   <div id="siteInfo" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
     <h3>All Diseases Detected at This Site</h3>
@@ -304,7 +305,8 @@ th {
      </table>
     </div>
    </div>
-   <div id="speciesList" style="display:none;"><button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+   <div id="speciesList" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
     <h2 id="diseaseTitle"></h2>
     <div class="table-container">
      <table id="speciesTable">
@@ -321,7 +323,8 @@ th {
     </div>
    </div>
    <div id="dashboard" style="display:none;">
-    <div class="button-group"><button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <div class="button-group">
+     <button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
     </div>
     <h2 id="dashboardTitle"></h2>
     <p id="dashboardSummary"></p>
@@ -362,16 +365,21 @@ th {
       </div>
      </div>
      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <div class="summary-stat"><span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
+      <div class="summary-stat">
+       <span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
+      <div class="summary-stat">
+       <span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
+      <div class="summary-stat">
+       <span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
+      <div class="summary-stat">
+       <span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
       </div>
      </div>
-     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;"><strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
+     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
+      <strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
      </div>
     </div>
     <div class="chart-container">
@@ -384,8 +392,7 @@ th {
     </div>
     <div class="chart-container">
      <h3>Infection Rates Across NEON Sites</h3>
-     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
+     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;"><button onclick="switchMapOverlay('infection')" id="btn-infection" style="background: #2e5339; color: white; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Infection Rate</button> <button onclick="switchMapOverlay('temperature')" id="btn-temperature" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Temperature</button> <button onclick="switchMapOverlay('rainfall')" id="btn-rainfall" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Rainfall</button> <button onclick="switchMapOverlay('mosquitoes')" id="btn-mosquitoes" style="background: #e8f0ea; color: #2e5339; padding: 0.5rem 1rem; font-size: 14px; border-radius: 6px;">Mosquito Population</button>
      </div>
      <div id="mapDashboard" style="height: 500px; border-radius: 8px; position: relative;"></div>
      <div id="mapLegendBox" style="background: white; border: 1px solid #ccc; border-radius: 6px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
@@ -1406,19 +1413,59 @@ function renderMonthlyChart(siteData) {
     : siteData.monthlyTemp.map(c => (c * 9/5) + 32);
   const tempLabel = state.isCelsius ? '°C' : '°F';
 
+  // Calculate species-specific mosquito data
+  const disease = state.selectedDisease;
+  const species = state.selectedSpecies;
+  const diseaseData = sampleData.diseases[disease];
+  
+  // Get all species that carry this disease
+  const allSpeciesForDisease = diseaseData.species;
+  const selectedSpeciesData = allSpeciesForDisease.find(s => s.name === species);
+  
+  // Calculate this species' proportion of total catch
+  const totalSpeciesTested = allSpeciesForDisease.reduce((sum, s) => sum + s.tested, 0);
+  const speciesProportionOfCatch = selectedSpeciesData.tested / totalSpeciesTested;
+  
+  // Scale monthly mosquitoes to this species
+  const monthlySpeciesMosquitoes = siteData.monthlyMosquitoes.map(month => 
+    Math.round(month * speciesProportionOfCatch)
+  );
+  
+  // Calculate species infection rate
+  const speciesInfectionRate = selectedSpeciesData.positive / selectedSpeciesData.tested;
+  
+  // Calculate monthly infections for this species (peak during summer months)
+  const monthlySpeciesInfections = siteData.monthlyMosquitoes.map((month, i) => {
+    const speciesMonth = Math.round(month * speciesProportionOfCatch);
+    return Math.round(speciesMonth * speciesInfectionRate);
+  });
+
   state.charts.monthly = new Chart(ctx, {
     type: 'line',
     data: {
       labels: siteData.months,
       datasets: [
         {
-          label: 'Mosquitoes Caught',
-          data: siteData.monthlyMosquitoes,
+          label: `${species} Caught`,
+          data: monthlySpeciesMosquitoes,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.1)',
           yAxisID: 'y',
           tension: 0.4,
-          fill: true
+          fill: true,
+          borderWidth: 3
+        },
+        {
+          label: `${species} with ${disease}`,
+          data: monthlySpeciesInfections,
+          borderColor: '#e24a4a',
+          yAxisID: 'y-infections',
+          tension: 0.4,
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 5,
+          pointBackgroundColor: '#e24a4a',
+          pointBorderColor: '#e24a4a'
         },
         {
           label: 'Rainfall (mm)',
@@ -1432,9 +1479,10 @@ function renderMonthlyChart(siteData) {
         {
           label: `Temperature (${tempLabel})`,
           data: tempData,
-          borderColor: '#e24a4a',
+          borderColor: '#f59e0b',
           yAxisID: 'y2',
-          tension: 0.4
+          tension: 0.4,
+          borderWidth: 2
         },
         {
           label: 'Humidity (%)',
@@ -1467,7 +1515,8 @@ function renderMonthlyChart(siteData) {
       },
       scales: {
         x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
-        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: `${species} Count`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        'y-infections': { type: 'linear', display: true, position: 'left', title: { display: true, text: `${species} Infections`, font: { size: 14, weight: 'bold' } }, ticks: { color: '#e24a4a', font: { size: 12, weight: 'bold' } } },
         y1: { type: 'linear', display: true, position: 'center', title: { display: true, text: 'Rainfall (mm)', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
         y2: { type: 'linear', display: true, position: 'right', title: { display: true, text: `Temperature (${tempLabel})`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
         y3: { type: 'linear', display: false, min: 0, max: 100 }
@@ -1475,7 +1524,7 @@ function renderMonthlyChart(siteData) {
     },
     plugins: [{
       afterDatasetsDraw(chart) {
-        const humidityDatasetIndex = 3;
+        const humidityDatasetIndex = 4;
         const dataset = chart.data.datasets[humidityDatasetIndex];
         const meta = chart.getDatasetMeta(humidityDatasetIndex);
         const ctx = chart.ctx;
@@ -1499,14 +1548,46 @@ function renderAnnualChart(siteData) {
   const ctx = document.getElementById('chartAnnual').getContext('2d');
   if (state.charts.annual) state.charts.annual.destroy();
 
+  const disease = state.selectedDisease;
+  const species = state.selectedSpecies;
+  const diseaseData = sampleData.diseases[disease];
+  
+  if (!diseaseData) return;
+
+  // Get all species that carry this disease
+  const allSpeciesForDisease = diseaseData.species;
+  
+  // Find which species in the disease data matches our selected species
+  const selectedSpeciesData = allSpeciesForDisease.find(s => s.name === species);
+  
+  if (!selectedSpeciesData) return;
+
+  // Calculate infection rate for this species
+  const speciesInfectionRate = selectedSpeciesData.positive / selectedSpeciesData.tested;
+  
+  // Scale the annual infection data to this species' actual infection rate
+  // The siteData.annualInfections represents total infections at the site
+  // We scale it proportionally to this species' contribution
+  const speciesAnnualInfections = siteData.annualInfections.map(year => 
+    Math.round(year * speciesInfectionRate)
+  );
+  
+  // Scale mosquitoes proportionally based on species prevalence
+  // Assume this species makes up a portion of the total catch proportional to its tested count
+  const totalSpeciesTested = allSpeciesForDisease.reduce((sum, s) => sum + s.tested, 0);
+  const speciesProportionOfCatch = selectedSpeciesData.tested / totalSpeciesTested;
+  const speciesAnnualMosquitoes = siteData.annualMosquitoes.map(year => 
+    Math.round(year * speciesProportionOfCatch)
+  );
+
   state.charts.annual = new Chart(ctx, {
     type: 'line',
     data: {
       labels: siteData.annualYears,
       datasets: [
         {
-          label: 'Mosquitoes Caught',
-          data: siteData.annualMosquitoes,
+          label: `${species} Caught`,
+          data: speciesAnnualMosquitoes,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.1)',
           yAxisID: 'y',
@@ -1514,8 +1595,8 @@ function renderAnnualChart(siteData) {
           fill: true
         },
         {
-          label: 'Infections Detected',
-          data: siteData.annualInfections,
+          label: `${species} with ${disease}`,
+          data: speciesAnnualInfections,
           borderColor: '#e24a4a',
           yAxisID: 'y1',
           tension: 0.4
@@ -1527,8 +1608,8 @@ function renderAnnualChart(siteData) {
       interaction: { mode: 'index', intersect: false },
       scales: {
         x: { ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } },
-        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Mosquitoes Caught', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
-        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Infections Detected', font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } }
+        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: `${species} Caught`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } },
+        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: `Infections Detected`, font: { size: 16, weight: 'bold' } }, ticks: { color: '#000000', font: { size: 15, weight: 'bold' } } }
       }
     }
   });
@@ -1542,6 +1623,30 @@ function renderTemperatureChart(siteData) {
     ? siteData.seasonalTemp
     : siteData.seasonalTemp.map(c => (c * 9/5) + 32);
   const tempLabel = state.isCelsius ? '°C' : '°F';
+
+  // Calculate species-specific data
+  const disease = state.selectedDisease;
+  const species = state.selectedSpecies;
+  const diseaseData = sampleData.diseases[disease];
+  
+  // Get all species that carry this disease
+  const allSpeciesForDisease = diseaseData.species;
+  const selectedSpeciesData = allSpeciesForDisease.find(s => s.name === species);
+  
+  // Calculate infection rate for this species
+  const speciesInfectionRate = selectedSpeciesData.positive / selectedSpeciesData.tested;
+  
+  // Calculate seasonal infections for this species
+  const seasonalSpeciesInfections = siteData.seasonalMosquitoes.map(season => 
+    Math.round(season * speciesInfectionRate)
+  );
+  
+  // Scale mosquitoes to this species' proportion of catch
+  const totalSpeciesTested = allSpeciesForDisease.reduce((sum, s) => sum + s.tested, 0);
+  const speciesProportionOfCatch = selectedSpeciesData.tested / totalSpeciesTested;
+  const seasonalSpeciesMosquitoes = siteData.seasonalMosquitoes.map(season => 
+    Math.round(season * speciesProportionOfCatch)
+  );
 
   // Determine if we have negative temperatures
   const hasNegativeTemp = tempData.some(t => t < 0);
@@ -1586,8 +1691,8 @@ function renderTemperatureChart(siteData) {
           pointBorderColor: '#9b59b6'
         },
         {
-          label: 'Avg Mosquito Population',
-          data: siteData.seasonalMosquitoes,
+          label: `${species} Caught`,
+          data: seasonalSpeciesMosquitoes,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.2)',
           borderWidth: 3,
@@ -1595,6 +1700,19 @@ function renderTemperatureChart(siteData) {
           type: 'line',
           tension: 0.4,
           fill: true
+        },
+        {
+          label: `${species} with ${disease}`,
+          data: seasonalSpeciesInfections,
+          borderColor: '#e24a4a',
+          yAxisID: 'y2',
+          type: 'line',
+          tension: 0.4,
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 5,
+          pointBackgroundColor: '#e24a4a',
+          pointBorderColor: '#e24a4a'
         }
       ]
     },
@@ -1622,7 +1740,7 @@ function renderTemperatureChart(siteData) {
           type: 'linear',
           display: true,
           position: 'right',
-          title: { display: true, text: 'Mosquito Population', font: { size: 16, weight: 'bold' } },
+          title: { display: true, text: `${species} Count`, font: { size: 16, weight: 'bold' } },
           ticks: { color: '#000000', font: { size: 15, weight: 'bold' } }
         },
         y3: {
@@ -1660,20 +1778,51 @@ function renderCDCChart() {
   if (state.charts.cdc) state.charts.cdc.destroy();
 
   const disease = state.selectedDisease;
+  const species = state.selectedSpecies;
   const cdcDisease = sampleData.cdcData[disease];
   
   if (!cdcDisease) return;
 
-  // Get NEON infection data (scale to comparable range)
-  const neonInfectionData = sampleData.annualData.infections;
+  // Get species-specific infection data
+  const diseaseData = sampleData.diseases[disease];
+  const selectedSpeciesData = diseaseData.species.find(s => s.name === species);
+  
+  if (!selectedSpeciesData) return;
+
+  // Calculate this species' infection rate
+  const speciesInfectionRate = selectedSpeciesData.positive / selectedSpeciesData.tested;
+  
+  // Aggregate NEON data across ALL sites carrying this disease
+  const sitesWithDisease = sampleData.sites.filter(site => site.diseases.includes(disease));
+  const annualYears = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+  
+  const networkNeonInfections = annualYears.map(year => {
+    let totalInfections = 0;
+    sitesWithDisease.forEach(site => {
+      const siteData = generateSiteClimateData(site);
+      const yearIndex = annualYears.indexOf(year);
+      if (yearIndex >= 0) {
+        const siteYearInfections = siteData.annualInfections[yearIndex];
+        // Scale to this species' infection rate
+        totalInfections += Math.round(siteYearInfections * speciesInfectionRate);
+      }
+    });
+    return totalInfections;
+  });
+  
   const cdcCasesData = cdcDisease.humanCases;
   
-  // Get humidity data for NEON sites
-  const siteData = generateSiteClimateData(state.selectedSite);
-  const humidityByYear = Array(siteData.annualYears.length).fill(0).map((_, i) => {
-    const avgHumidity = (siteData.seasonalHumidity[0] + siteData.seasonalHumidity[1] + siteData.seasonalHumidity[2] + siteData.seasonalHumidity[3]) / 4;
+  // Get average humidity across all NEON sites with this disease
+  const humidityByYear = annualYears.map((year, i) => {
+    let totalHumidity = 0;
+    sitesWithDisease.forEach(site => {
+      const siteData = generateSiteClimateData(site);
+      const avgHumidity = (siteData.seasonalHumidity[0] + siteData.seasonalHumidity[1] + siteData.seasonalHumidity[2] + siteData.seasonalHumidity[3]) / 4;
+      totalHumidity += avgHumidity;
+    });
+    const networkAvgHumidity = sitesWithDisease.length > 0 ? totalHumidity / sitesWithDisease.length : 50;
     // Add slight year-to-year variation
-    return Math.min(100, Math.max(20, avgHumidity + (Math.sin(i * 0.5) * 5)));
+    return Math.min(100, Math.max(20, networkAvgHumidity + (Math.sin(i * 0.5) * 5)));
   });
   
   state.charts.cdc = new Chart(ctx, {
@@ -1682,8 +1831,8 @@ function renderCDCChart() {
       labels: cdcDisease.years,
       datasets: [
         {
-          label: 'NEON: Mosquito Infections Detected',
-          data: neonInfectionData,
+          label: `NEON Network: ${species} with ${disease} (all sites)`,
+          data: networkNeonInfections,
           borderColor: '#2e5339',
           backgroundColor: 'rgba(46, 83, 57, 0.1)',
           yAxisID: 'y',
@@ -1730,7 +1879,7 @@ function renderCDCChart() {
           type: 'linear',
           display: true,
           position: 'left',
-          title: { display: true, text: 'NEON Mosquito Infections', font: { size: 16, weight: 'bold' } },
+          title: { display: true, text: `${species} Infections (Network)`, font: { size: 16, weight: 'bold' } },
           ticks: { color: '#2e5339', font: { size: 15, weight: 'bold' } }
         },
         y1: {
@@ -1973,5 +2122,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb2ed3232afe716',t:'MTc3ODY4ODU1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb3045677f9e716',t:'MTc3ODY4OTUwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
