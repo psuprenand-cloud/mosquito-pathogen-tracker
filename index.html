@@ -491,7 +491,7 @@ const sampleData = {
     { id: "SEVI", name: "Sevilleta", lat: 34.3348, lng: -106.6317, state: "NM", elevation: 1593, ecosystem: "Chihuahuan Desert Shrubland", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Western Equine Encephalitis"] },
     { id: "ANDR", name: "H.J. Andrews Experimental Forest", lat: 44.2117, lng: -122.2558, state: "OR", elevation: 855, ecosystem: "Coniferous Forest", diseases: ["West Nile Virus", "Western Equine Encephalitis", "St. Louis Encephalitis"] },
     { id: "BONA", name: "Bonanza Creek", lat: 64.6978, lng: -148.3139, state: "AK", elevation: 212, ecosystem: "Boreal Forest", diseases: ["Orthobunyavirus (Snowshoe Hare)", "Tularemia", "Brucellosis"] },
-    { id: "SRER", name: "Santa Rita Experimental Range", lat: $31.9107, lng: -110.8355, state: "AZ", elevation: 997, ecosystem: "Desert Shrubland", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Dengue"] }
+    { id: "SRER", name: "Santa Rita Experimental Range", lat: 31.9107, lng: -110.8355, state: "AZ", elevation: 997, ecosystem: "Desert Shrubland", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Dengue"] }
    
    // Added Sites Here//
   
@@ -506,13 +506,12 @@ const sampleData = {
       { name: "Culex pipiens", tested: 1250, positive: 45 },
       { name: "Culex restuans", tested: 890, positive: 28 },
       { name: "Culex tarsalis", tested: 920, positive: 31 },
-      { name: "Aedes vexans", tested: 450, positive: 8 }
-      { name: "Culex quinquefasciatus", tested: 1100, positive: 38 }
-      { name: "Aedes japonicus", tested: 520, positive: 11 }
+      { name: "Aedes vexans", tested: 450, positive: 8 },
+      { name: "Culex quinquefasciatus", tested: 1100, positive: 38 },
+      { name: "Aedes japonicus", tested: 520, positive: 11 },
       { name: "Aedes albopictus", tested: 850, positive: 14 },
       { name: "Culiseta melanura", tested: 420, positive: 19 },
-      { name: "Aedes triseriatus", tested: 310, positive: 12 }
-      { name: "Aedes vexans", tested: 2100, positive: 2 },
+      { name: "Aedes triseriatus", tested: 310, positive: 12 },
       { name: "Coquillettidia perturbans", tested: 1450, positive: 8 },
       { name: "Aedes aegypti", tested: 940, positive: 12 },
       { name: "Psorophora columbiae", tested: 600, positive: 0 },
@@ -576,7 +575,7 @@ const sampleData = {
   "Orthobunyavirus (Snowshoe Hare)": {
     species: [
       { name: "Aedes communis", tested: 1540, positive: 18 },
-      { name: "Aedes impiger", tested: 1320, positive: 12 }
+      { name: "Aedes impiger", tested: 1320, positive: 12 },
      { name: "Culiseta alaskaensis", tested: 1200, positive: 14 },
      { name: "Aedes punctor", tested: 2100, positive: 31 }
     ]
@@ -590,6 +589,19 @@ const sampleData = {
   "Avian Malaria": {
   species: [
     { name: "Culex quinquefasciatus", tested: 2400, positive: 112 }
+  ]
+},
+  "Brucellosis": {
+  species: [
+    { name: "Rangifer tarandus (Caribou)", tested: 120, positive: 14 },
+    { name: "Canis lupus (Grey Wolf)", tested: 45, positive: 6 }
+  ]
+},
+"Leptospirosis": {
+  species: [
+    { name: "Rattus norvegicus (Brown Rat)", tested: 380, positive: 112 },
+    { name: "Sus scrofa (Feral Pig)", tested: 150, positive: 45 },
+    { name: "Freshwater/Soil Samples", tested: 500, positive: 88 }
   ]
 },
 "Rat Lungworm": {
