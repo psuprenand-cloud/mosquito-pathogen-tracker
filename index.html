@@ -285,13 +285,15 @@ th {
     <div id="updateStatus"></div>
     <div id="map"></div>
    </div>
-   <div id="siteInfo" style="display:none;"><button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
+   <div id="siteInfo" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteSelection')">← Back</button>
     <h2 id="siteTitle"></h2>
     <p id="siteDetails"></p>
     <h3>Diseases Detected</h3>
     <div id="diseaseList"></div>
    </div>
-   <div id="speciesList" style="display:none;"><button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
+   <div id="speciesList" style="display:none;">
+    <button class="back-btn" onclick="showPage('siteInfo')">← Back</button>
     <h2 id="diseaseTitle"></h2>
     <div class="table-container">
      <table id="speciesTable">
@@ -308,7 +310,8 @@ th {
     </div>
    </div>
    <div id="dashboard" style="display:none;">
-    <div class="button-group"><button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
+    <div class="button-group">
+     <button class="back-btn" onclick="showPage('speciesList')">← Back</button> <button class="home-btn" onclick="showPage('siteSelection')">🏠 Start Over</button>
     </div>
     <h2 id="dashboardTitle"></h2>
     <p id="dashboardSummary"></p>
@@ -349,16 +352,21 @@ th {
       </div>
      </div>
      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <div class="summary-stat"><span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
+      <div class="summary-stat">
+       <span class="stat-label">Avg Infection Rate:</span> <span class="stat-value" id="avgInfectionRate">3.8%</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
+      <div class="summary-stat">
+       <span class="stat-label">Total Mosquitoes Tested:</span> <span class="stat-value" id="totalTested">4,200</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
+      <div class="summary-stat">
+       <span class="stat-label">Geographic Hotspot:</span> <span class="stat-value" id="hotspot">Mid-Atlantic</span>
       </div>
-      <div class="summary-stat"><span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
+      <div class="summary-stat">
+       <span class="stat-label">Climate Correlation:</span> <span class="stat-value" id="climateCorr">Temp &gt;20°C</span>
       </div>
      </div>
-     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;"><strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
+     <div id="relatedSpeciesAlert" style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
+      <strong style="color: #856404;">⚠ Related Species:</strong> <span id="relatedSpeciesText" style="color: #856404;"></span>
      </div>
     </div>
     <div class="chart-container">
@@ -1187,21 +1195,45 @@ async function checkForUpdates() {
   const fetchBtn = event.target.closest('button');
   const originalText = fetchBtn.innerHTML;
   
-  fetchBtn.innerHTML = '<span class="loading-spinner"></span>Checking NEON...';
+  fetchBtn.innerHTML = '<span class="loading-spinner"></span>Checking NEON & CDC...';
   fetchBtn.disabled = true;
 
+  let neonSuccess = false;
+  let cdcSuccess = false;
+
   try {
-    // Try to fetch real NEON data
-    const response = await fetch('https://data.neonscience.org/api/v0/products/DP1.20107.001');
+    // Try to fetch real NEON mosquito data
+    const neonResponse = await fetch('https://data.neonscience.org/api/v0/products/DP1.20107.001');
     
-    if (response.ok) {
-      statusDiv.innerHTML = '<div class="update-status update-success">✓ Connected to NEON API! Data is up to date.</div>';
+    if (neonResponse.ok) {
+      neonSuccess = true;
       console.log('NEON API available');
-    } else {
-      statusDiv.innerHTML = '<div class="update-status update-info">ℹ Using local sample data (NEON API unavailable)</div>';
     }
   } catch (error) {
-    statusDiv.innerHTML = '<div class="update-status update-info">ℹ Using local sample data. Real-time updates require direct NEON API access.</div>';
+    console.log('NEON API unavailable');
+  }
+
+  try {
+    // Try to fetch CDC disease surveillance data
+    const cdcResponse = await fetch('https://data.cdc.gov/api/views/r8kz-f6p4/rows.json?limit=50000');
+    
+    if (cdcResponse.ok) {
+      cdcSuccess = true;
+      console.log('CDC API available');
+    }
+  } catch (error) {
+    console.log('CDC API unavailable');
+  }
+
+  // Display status based on what was successful
+  if (neonSuccess && cdcSuccess) {
+    statusDiv.innerHTML = '<div class="update-status update-success">✓ Connected to NEON & CDC APIs! Data is up to date.</div>';
+  } else if (neonSuccess) {
+    statusDiv.innerHTML = '<div class="update-status update-info">ℹ NEON data updated. CDC data using local sample.</div>';
+  } else if (cdcSuccess) {
+    statusDiv.innerHTML = '<div class="update-status update-info">ℹ CDC data updated. NEON data using local sample.</div>';
+  } else {
+    statusDiv.innerHTML = '<div class="update-status update-info">ℹ Using local sample data. Real-time updates require NEON & CDC API access.</div>';
   }
 
   fetchBtn.innerHTML = originalText;
@@ -1220,5 +1252,5 @@ window.addEventListener('load', () => {
   showPage('siteSelection');
 });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad66cad66c5eab',t:'MTc3ODYzMDYyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fad6c1085ea8c20',t:'MTc3ODYzMDgzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
