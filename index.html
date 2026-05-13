@@ -489,7 +489,16 @@ const sampleData = {
     { id: "TRIN", name: "Trinity River", lat: 40.8155, lng: -120.6300, state: "CA", elevation: 600, ecosystem: "Douglas Fir Forest", diseases: ["West Nile Virus", "Zika"] },
   
    // Added Sites Here//
-   
+   { 
+  id: "KONZ", 
+  name: "Konza Prairie", 
+  lat: 39.1007, 
+  lng: -96.5630, 
+  state: "KS", 
+  elevation: 334, 
+  ecosystem: "Tallgrass Prairie", 
+  diseases: ["West Nile Virus", "Western Equine Encephalitis", "St. Louis Encephalitis"] 
+  },
    { 
   id: "LENO", 
   name: "Lenore", 
@@ -523,6 +532,12 @@ const sampleData = {
    ///TO HERE///
   ],
   diseases: {
+   "St. Louis Encephalitis": {
+  species: [
+    { name: "Culex pipiens", tested: 400, positive: 5 },
+    { name: "Culex tarsalis", tested: 350, positive: 8 }
+  ]
+},
    "Western Equine Encephalitis": {
    species: [
     { name: "Culex tarsalis", tested: 850, positive: 12 },
