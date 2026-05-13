@@ -435,9 +435,9 @@ let state = {
 const sampleData = {
   sites: [
     { id: "HARV", name: "Harvard Forest", lat: 42.5369, lng: -72.1727, state: "MA", elevation: 340, ecosystem: "Temperate Deciduous Forest", diseases: ["West Nile Virus", "Eastern Equine Encephalitis", "Jamestown Canyon Virus"] },
-    { id: "BART", name: "Bartlett Experimental Forest", lat: 44.0646, lng: -71.2881, state: "NH", elevation: 271, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis", "Jamestown Canyon Virus"] },
+    { id: "BART", name: "Bartlett Experimental Forest", lat: 44.0646, lng: -71.2881, state: "NH", elevation: 271, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis", "Jamestown Canyon Virus", "West Nile Virus"] },
     { id: "SCBI", name: "Smithsonian Conservation Biology Institute", lat: 38.8933, lng: -78.1395, state: "VA", elevation: 230, ecosystem: "Mixed Deciduous Forest", diseases: ["West Nile Virus", "Dengue"] },
-    { id: "SERC", name: "Smithsonian Environmental Research Center", lat: 38.8944, lng: -76.5601, state: "MD", elevation: 5, ecosystem: "Estuarine Wetland", diseases: ["West Nile Virus"] },
+    { id: "SERC", name: "Smithsonian Environmental Research Center", lat: 38.8944, lng: -76.5601, state: "MD", elevation: 5, ecosystem: "Estuarine Wetland", diseases: ["West Nile Virus", "Eastern Equine Encephalitis", "La Crosse Encephalitis"] },
     { id: "JERC", name: "Jedediah Smith Redwoods", lat: 41.1969, lng: -124.0089, state: "CA", elevation: 100, ecosystem: "Coastal Redwood Forest", diseases: ["West Nile Virus", "Zika", "St. Louis Encephalitis", "Dengue"] },
     { id: "KONZ", name: "Konza Prairie", lat: 39.1045, lng: -96.5628, state: "KS", elevation: 387, ecosystem: "Tallgrass Prairie", diseases: ["West Nile Virus", "Western Equine Encephalitis", "St. Louis Encephalitis"] },
     { id: "OSBS", name: "Ordway-Swisher Biological Station", lat: 29.6851, lng: -81.9915, state: "FL", elevation: 21, ecosystem: "Scrub Forest", diseases: ["West Nile Virus", "Eastern Equine Encephalitis", "St. Louis Encephalitis", "Zika"] },
@@ -447,16 +447,16 @@ const sampleData = {
     { id: "TALL", name: "Tallgrass Prairie National Preserve", lat: 38.4574, lng: -96.5834, state: "KS", elevation: 358, ecosystem: "Tallgrass Prairie", diseases: ["West Nile Virus"] },
     { id: "MOAB", name: "Moab", lat: 38.2619, lng: -109.3915, state: "UT", elevation: 1287, ecosystem: "Slickrock Shrubland", diseases: ["West Nile Virus", "St. Louis Encephalitis"] },
     { id: "CLBJ", name: "Caribou Lake", lat: 65.1667, lng: -148.2333, state: "AK", elevation: 120, ecosystem: "Boreal Forest", diseases: ["Culiseta melanura Complex", "Orthobunyavirus (Snowshoe Hare)"] },
-    { id: "TOOL", name: "Toolik Field Station", lat: 68.6280, lng: -149.5975, state: "AK", elevation: 740, ecosystem: "Arctic Tundra", diseases: ["Orthobunyavirus (Snowshoe Hare)"] },
+    { id: "TOOL", name: "Toolik Field Station", lat: 68.6280, lng: -149.5975, state: "AK", elevation: 740, ecosystem: "Arctic Tundra", diseases: ["Orthobunyavirus (Snowshoe Hare)", "Tularemia"] },
     { id: "DCFS", name: "Desert Ecology", lat: 31.1907, lng: -110.5551, state: "AZ", elevation: 1170, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
     { id: "DSNY", name: "Disney Wilderness Preserve", lat: 28.1195, lng: -81.4374, state: "FL", elevation: 32, ecosystem: "Cypress Forest", diseases: ["West Nile Virus", "Dengue", "Zika"] },
-    { id: "JORN", name: "Jornada Basin LTER", lat: 32.6258, lng: -106.7425, state: "NM", elevation: 1575, ecosystem: "Chihuahuan Desert", diseases: ["Dengue"] },
+    { id: "JORN", name: "Jornada Basin LTER", lat: 32.6258, lng: -106.7425, state: "NM", elevation: 1575, ecosystem: "Chihuahuan Desert", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Dengue"] },
     { id: "KONA", name: "Kona Experiment", lat: 19.5505, lng: -155.2827, state: "HI", elevation: 2045, ecosystem: "Tropical Montane Forest", diseases: ["Dengue"] },
     { id: "LAJA", name: "Luquillo LTER", lat: 18.3256, lng: -65.3164, state: "PR", elevation: 292, ecosystem: "Tropical Rainforest", diseases: ["Dengue", "Zika"] },
     { id: "SOAP", name: "Soaproot Saddle", lat: 37.0332, lng: -119.2624, state: "CA", elevation: 1873, ecosystem: "Sierra Nevada Mixed Conifer", diseases: ["West Nile Virus", "Zika", "Dengue"] },
     { id: "SJER", name: "San Joaquin Experimental Range", lat: 37.1088, lng: -119.7299, state: "CA", elevation: 400, ecosystem: "Oak Savanna", diseases: ["West Nile Virus", "Zika", "Dengue"] },
     { id: "TERC", name: "Tern River", lat: 56.6583, lng: -152.3542, state: "AK", elevation: 32, ecosystem: "Temperate Rainforest", diseases: ["Culiseta melanura Complex"] },
-    { id: "UNDE", name: "Underc", lat: 46.2347, lng: -89.5375, state: "WI", elevation: 477, ecosystem: "Temperate Forest", diseases: ["Eastern Equine Encephalitis", "Jamestown Canyon Virus"] },
+    { id: "UNDE", name: "Underc", lat: 46.2347, lng: -89.5375, state: "WI", elevation: 477, ecosystem: "Temperate Forest", diseases: ["Eastern Equine Encephalitis", "Jamestown Canyon Virus", "La Crosse Encephalitis", "West Nile Virus"] },
     { id: "WREF", name: "Wind River Experimental Forest", lat: 45.8205, lng: -121.9519, state: "WA", elevation: 372, ecosystem: "Temperate Rainforest", diseases: ["West Nile Virus"] },
     { id: "CPER", name: "Central Plains Experimental Range", lat: 40.8155, lng: -104.7453, state: "CO", elevation: 1655, ecosystem: "Shortgrass Prairie", diseases: ["West Nile Virus", "St. Louis Encephalitis"] },
     { id: "GRSM", name: "Great Smoky Mountains", lat: 35.0707, lng: -83.5007, state: "TN", elevation: 1340, ecosystem: "Temperate Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
@@ -464,16 +464,16 @@ const sampleData = {
     { id: "MLBS", name: "Mountain Lake Biological Station", lat: 37.3781, lng: -80.5297, state: "VA", elevation: 640, ecosystem: "Temperate Deciduous Forest", diseases: ["West Nile Virus", "La Crosse Encephalitis", "Jamestown Canyon Virus"] },
     { id: "OAES", name: "Oaks and Prairies", lat: 35.4107, lng: -97.5192, state: "OK", elevation: 345, ecosystem: "Oak Savanna", diseases: ["West Nile Virus"] },
     { id: "ORNL", name: "Oak Ridge National Laboratory", lat: 35.9034, lng: -84.3279, state: "TN", elevation: 226, ecosystem: "Temperate Deciduous Forest", diseases: ["West Nile Virus", "La Crosse Encephalitis", "St. Louis Encephalitis"] },
-    { id: "PUUM", name: "Puu Makai", lat: 20.8049, lng: -156.4519, state: "HI", elevation: 2430, ecosystem: "Tropical Shrubland", diseases: ["Dengue"] },
+    { id: "PUUM", name: "Puu Makai", lat: 20.8049, lng: -156.4519, state: "HI", elevation: 2430, ecosystem: "Tropical Shrubland", diseases: ["Avian Malaria", "Rat Lungworm", "Dengue", "Leptospirosis"] },
     { id: "RMNP", name: "Rocky Mountain National Park", lat: 40.4150, lng: -105.5859, state: "CO", elevation: 2925, ecosystem: "Alpine Meadow", diseases: ["Eastern Equine Encephalitis", "West Nile Virus", "St. Louis Encephalitis"] },
     { id: "SAGU", name: "Saguaro National Monument", lat: 32.2508, lng: -110.7578, state: "AZ", elevation: 875, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
     { id: "SPHW", name: "Suggs Pond Hydrologically Active Wetland", lat: 32.3896, lng: -81.1915, state: "GA", elevation: 8, ecosystem: "Freshwater Marsh", diseases: ["West Nile Virus", "Dengue", "Zika"] },
-    { id: "STEI", name: "Stein", lat: 46.4082, lng: -122.3000, state: "WA", elevation: 1427, ecosystem: "Pacific Northwest Forest", diseases: ["West Nile Virus"] },
+    { id: "STEI", name: "Stein", lat: 46.4082, lng: -122.3000, state: "WA", elevation: 1427, ecosystem: "Pacific Northwest Forest", diseases: ["West Nile Virus", "Western Equine Encephalitis"] },
     { id: "TREE", name: "Treeline", lat: 40.2657, lng: -105.9064, state: "CO", elevation: 3039, ecosystem: "Subalpine Forest", diseases: [] },
     { id: "TEAK", name: "Teakettle", lat: 37.1088, lng: -119.0069, state: "CA", elevation: 1283, ecosystem: "Sierra Nevada Conifer", diseases: ["West Nile Virus", "Zika", "Dengue"] },
     { id: "UKFS", name: "University of Kansas Field Station", lat: 38.9589, lng: -95.1905, state: "KS", elevation: 313, ecosystem: "Tallgrass Prairie", diseases: ["West Nile Virus"] },
     { id: "VALE", name: "Vaira Ranch", lat: 38.4152, lng: -120.9500, state: "CA", elevation: 65, ecosystem: "Annual Grassland", diseases: ["West Nile Virus", "Zika", "Dengue"] },
-    { id: "WOOD", name: "Woodworth", lat: 47.1280, lng: -99.2411, state: "ND", elevation: 518, ecosystem: "Northern Prairie", diseases: ["West Nile Virus"] },
+    { id: "WOOD", name: "Woodworth", lat: 47.1280, lng: -99.2411, state: "ND", elevation: 518, ecosystem: "Northern Prairie", diseases: ["West Nile Virus", "La Crosse Encephalitis", "Western Equine Encephalitis"] },
     { id: "WLOU", name: "Walnut Gulch", lat: 31.7365, lng: -110.4521, state: "AZ", elevation: 1503, ecosystem: "Sonoran Desert", diseases: ["Dengue"] },
     { id: "YELL", name: "Yellowstone", lat: 44.2998, lng: -110.5891, state: "WY", elevation: 2286, ecosystem: "Subalpine Forest", diseases: ["West Nile Virus", "Eastern Equine Encephalitis"] },
     { id: "BLAN", name: "Blandy Experimental Farm", lat: 39.0667, lng: -78.0667, state: "VA", elevation: 155, ecosystem: "Deciduous Forest", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Jamestown Canyon Virus"] },
@@ -487,48 +487,17 @@ const sampleData = {
     { id: "NEON", name: "NEON Headquarters", lat: 36.6055, lng: -97.4867, state: "OK", elevation: 345, ecosystem: "Urban/Suburban", diseases: ["West Nile Virus"] },
     { id: "TPHE", name: "Trout Pond", lat: 42.1598, lng: -72.1743, state: "MA", elevation: 335, ecosystem: "Deciduous Forest", diseases: ["Eastern Equine Encephalitis"] },
     { id: "TRIN", name: "Trinity River", lat: 40.8155, lng: -120.6300, state: "CA", elevation: 600, ecosystem: "Douglas Fir Forest", diseases: ["West Nile Virus", "Zika", "Dengue"] },
-  
+    { id: "BLDE", name: "Blacktail Deer Creek", lat: 44.9501, lng: -110.5872, state: "WY", elevation: 2053, ecosystem: "High Plateau / Riparian", diseases: ["West Nile Virus", "Western Equine Encephalitis"] },
+    { id: "SEVI", name: "Sevilleta", lat: 34.3348, lng: -106.6317, state: "NM", elevation: 1593, ecosystem: "Chihuahuan Desert Shrubland", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Western Equine Encephalitis"] },
+    { id: "ANDR", name: "H.J. Andrews Experimental Forest", lat: 44.2117, lng: -122.2558, state: "OR", elevation: 855, ecosystem: "Coniferous Forest", diseases: ["West Nile Virus", "Western Equine Encephalitis", "St. Louis Encephalitis"] },
+    { id: "BONA", name: "Bonanza Creek", lat: 64.6978, lng: -148.3139, state: "AK", elevation: 212, ecosystem: "Boreal Forest", diseases: ["Orthobunyavirus (Snowshoe Hare)", "Tularemia", "Brucellosis"] },
+    { id: "SRER", name: "Santa Rita Experimental Range", lat: $31.9107, lng: -110.8355, state: "AZ", elevation: 997, ecosystem: "Desert Shrubland", diseases: ["West Nile Virus", "St. Louis Encephalitis", "Dengue"] }
+   
    // Added Sites Here//
-   { 
-  id: "KONZ", 
-  name: "Konza Prairie", 
-  lat: 39.1007, 
-  lng: -96.5630, 
-  state: "KS", 
-  elevation: 334, 
-  ecosystem: "Tallgrass Prairie", 
-  diseases: ["West Nile Virus", "Western Equine Encephalitis", "St. Louis Encephalitis"] 
-  },
-   { 
-  id: "LENO", 
-  name: "Lenore", 
-  lat: 46.0829, 
-  lng: -119.2723, 
-  state: "WA", 
-  elevation: 197, 
-  ecosystem: "Sagebrush Steppe", 
-  diseases: ["West Nile Virus", "Western Equine Encephalitis"] 
-},
-{ 
-  id: "WREF", 
-  name: "Wind River Experimental Forest", 
-  lat: 45.8205, 
-  lng: -121.9519, 
-  state: "WA", 
-  elevation: 372, 
-  ecosystem: "Temperate Rainforest", 
-  diseases: ["West Nile Virus"] 
-},
-{ 
-  id: "STEI", 
-  name: "Stein", 
-  lat: 46.4082, 
-  lng: -122.3000, 
-  state: "WA", 
-  elevation: 1427, 
-  ecosystem: "Pacific Northwest Forest", 
-  diseases: ["Western Equine Encephalitis"] 
-}
+  
+  
+
+
    ///TO HERE///
   ],
  diseases: {
@@ -540,8 +509,25 @@ const sampleData = {
       { name: "Aedes vexans", tested: 450, positive: 8 }
       { name: "Culex quinquefasciatus", tested: 1100, positive: 38 }
       { name: "Aedes japonicus", tested: 520, positive: 11 }
+      { name: "Aedes albopictus", tested: 850, positive: 14 },
+      { name: "Culiseta melanura", tested: 420, positive: 19 },
+      { name: "Aedes triseriatus", tested: 310, positive: 12 }
+      { name: "Aedes vexans", tested: 2100, positive: 2 },
+      { name: "Coquillettidia perturbans", tested: 1450, positive: 8 },
+      { name: "Aedes aegypti", tested: 940, positive: 12 },
+      { name: "Psorophora columbiae", tested: 600, positive: 0 },
+      { name: "Ochlerotatus japonicus", tested: 450, positive: 4 },
     ]
   },
+  "Western Equine Encephalitis": {
+  species: [
+    { name: "Culex tarsalis", tested: 850, positive: 12 },
+    { name: "Aedes dorsalis", tested: 420, positive: 4 },
+    { name: "Culiseta inornata", tested: 310, positive: 2 },
+   { name: "Ochlerotatus japonicus", tested: 450, positive: 4 },
+   { name: "Aedes vexans", tested: 1200, positive: 2 }
+  ]
+},
   "Eastern Equine Encephalitis": {
     species: [
       { name: "Culiseta melanura", tested: 320, positive: 12 },
@@ -558,7 +544,9 @@ const sampleData = {
     species: [
       { name: "Aedes canadensis", tested: 410, positive: 14 },
       { name: "Aedes vexans", tested: 650, positive: 9 },
-      { name: "Anopheles punctipennis", tested: 280, positive: 4 }
+      { name: "Aedes excrucians", tested: 320, positive: 12 },
+      { name: "Aedes canadensis", tested: 450, positive: 8 },
+      { name: "Anopheles punctipennis", tested: 210, positive: 3 }
     ]
   },
   "St. Louis Encephalitis": {
@@ -589,8 +577,27 @@ const sampleData = {
     species: [
       { name: "Aedes communis", tested: 1540, positive: 18 },
       { name: "Aedes impiger", tested: 1320, positive: 12 }
+     { name: "Culiseta alaskaensis", tested: 1200, positive: 14 },
+     { name: "Aedes punctor", tested: 2100, positive: 31 }
     ]
   },
+  "Tularemia": {
+  species: [
+    { name: "Dermacentor variabilis", tested: 150, positive: 5 }, // Invasive ticks
+    { name: "Chrysops spp.", tested: 300, positive: 12 } // Deer flies
+  ]
+},
+  "Avian Malaria": {
+  species: [
+    { name: "Culex quinquefasciatus", tested: 2400, positive: 112 }
+  ]
+},
+"Rat Lungworm": {
+  species: [
+    { name: "Rattus rattus", tested: 450, positive: 180 },
+    { name: "Parmarion martensi", tested: 300, positive: 95 }
+  ]
+},
   "La Crosse Encephalitis": {
   species: [
     { name: "Aedes triseriatus", tested: 450, positive: 28 },
